@@ -18,6 +18,10 @@ package com.github.tamir7.contacts;
 
 import android.provider.ContactsContract;
 
+/**
+ * Represents an Email.
+ *
+ */
 public class Email {
     private final String address;
     private final Type type;
@@ -61,14 +65,29 @@ public class Email {
         this.label = label;
     }
 
+    /**
+     * Gets the email address.
+     *
+     * @return address.
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Gets the type of email.
+     *
+     * @return type of email.
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * Gets the label. (null unless type = TYPE_CUSTOM)
+     *
+     * @return label.
+     */
     public String getLabel() {
         return label;
     }

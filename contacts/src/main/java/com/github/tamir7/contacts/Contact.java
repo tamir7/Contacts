@@ -23,6 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents a compound contact. aggregating all phones, email and photo's a contact has.
+ */
 public final class Contact {
     private final Set<String> displayNames = new HashSet<>();
     private final Set<PhoneNumber> phoneNumbers = new HashSet<>();
@@ -114,18 +117,38 @@ public final class Contact {
         return this;
     }
 
+    /**
+     * Gets a list of all display names the contact has.
+     *
+     * @return A List of display names.
+     */
     public List<String> getDisplayNames() {
         return Arrays.asList(displayNames.toArray(new String[displayNames.size()]));
     }
 
+    /**
+     * Gets a list of all phone numbers the contact has.
+     *
+     * @return A List of phone numbers.
+     */
     public List<PhoneNumber> getPhoneNumbers() {
         return Arrays.asList(phoneNumbers.toArray(new PhoneNumber[phoneNumbers.size()]));
     }
 
+    /**
+     * Gets a list of all photo uri's the contact has.
+     *
+     * @return A List of photo uri's.
+     */
     public List<String> getPhotoUris() {
         return Arrays.asList(photoUris.toArray(new String[photoUris.size()]));
     }
 
+    /**
+     * Gets a list of all emails the contact has.
+     *
+     * @return A List of emails.
+     */
     public List<Email> getEmails() {
         return Arrays.asList(emails.toArray(new Email[emails.size()]));
     }

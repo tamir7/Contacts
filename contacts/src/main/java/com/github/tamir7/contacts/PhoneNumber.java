@@ -18,6 +18,9 @@ package com.github.tamir7.contacts;
 
 import android.provider.ContactsContract;
 
+/**
+ * Represents a phone number
+ */
 public class PhoneNumber {
     private final String normalizedNumber;
     private final Type type;
@@ -109,14 +112,29 @@ public class PhoneNumber {
         this.label = label;
     }
 
+    /**
+     * Gets the label of the phone number. (null unless type = CUSTOM)
+     *
+     * @return label.
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Gets the normalized phone number.
+     *
+     * @return normalized phone number.
+     */
     public String getNormalizedNumber() {
         return normalizedNumber;
     }
 
+    /**
+     * Gets the type of the phone number.
+     *
+     * @return type.
+     */
     public Type getType() {
         return type;
     }

@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The Query class defines a query that is used to fetch Contact objects.
+ */
 public final class Query {
     private final Context context;
     private final Map<Contact.Field, Object> contains = new HashMap<>();
@@ -41,22 +44,45 @@ public final class Query {
         include.addAll(Arrays.asList(Contact.Field.values()));
     }
 
+    /**
+     * Add a constraint to the query for finding string values that contain the provided string.
+     *
+     * @param field     The field that the string to match is stored in.
+     * @param value     The substring that the value must contain.
+     * @return          this, so you can chain this call.
+     */
     public Query whereContains(Contact.Field field, Object value) {
         contains.put(field, value);
         return this;
     }
 
+    /**
+     * Restrict the return contacts to only include contacts with a phone number.
+     *
+     * @return this, so you can chain this call.
+     */
     public Query hasPhoneNumber() {
         hasPhoneNumber = true;
         return this;
     }
 
+    /**
+     * Restrict the fields of returned Contacts to only include the provided fields.
+     *
+     * @param fields The array of keys to include in the result.
+     * @return this, so you can chain this call.
+     */
     public Query include(Contact.Field... fields) {
         include.clear();
         include.addAll(Arrays.asList(fields));
         return this;
     }
 
+    /**
+     * Retrieves a list of contacts that satisfy this query.
+     *
+     * @return A list of all contacts obeying the conditions set in this query.
+     */
     public List<Contact> find() {
         Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 buildProjection(),
