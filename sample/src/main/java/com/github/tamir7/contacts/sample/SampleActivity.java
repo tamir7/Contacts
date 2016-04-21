@@ -39,6 +39,7 @@ public class SampleActivity extends AppCompatActivity {
             public Void call() throws Exception {
                 Query q = Contacts.getQuery();
                 q.hasPhoneNumber();
+                q.include(Contact.Field.DisplayName);
                 q.whereContains(Contact.Field.DisplayName, "Hadar");
                 List<Contact> contacts = q.find();
                 Log.e(TAG, new Gson().toJson(contacts));

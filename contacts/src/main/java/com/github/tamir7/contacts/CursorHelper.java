@@ -27,52 +27,63 @@ class CursorHelper {
     }
 
     Long getContactId() {
-        return c.getLong(c.getColumnIndex(ContactsContract.RawContacts.CONTACT_ID));
+        return getLong(c, ContactsContract.RawContacts.CONTACT_ID);
     }
 
     String getMimeType() {
-        return c.getString(c.getColumnIndex(ContactsContract.Data.MIMETYPE));
+        return getString(c, ContactsContract.Data.MIMETYPE);
     }
 
     String getDisplayName() {
-        return c.getString(c.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+        return getString(c, ContactsContract.Data.DISPLAY_NAME);
     }
 
     PhoneNumber getPhoneNumber() {
-        String normalizedNumber =
-                c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+        String normalizedNumber = getString(c, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
         if (normalizedNumber == null) {
             return null;
         }
 
-        PhoneNumber.Type type =
-                PhoneNumber.Type.fromValue(c.getInt(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
+        PhoneNumber.Type type = PhoneNumber.Type.fromValue(getInt(c,
+                ContactsContract.CommonDataKinds.Phone.TYPE));
         if (!type.equals(PhoneNumber.Type.CUSTOM)) {
             return new PhoneNumber(normalizedNumber, type);
         }
 
         return new PhoneNumber(normalizedNumber,
-                c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL)));
+                getString(c, ContactsContract.CommonDataKinds.Phone.LABEL));
     }
 
     Email getEmail() {
-        String address =
-                c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+        String address = getString(c, ContactsContract.CommonDataKinds.Email.ADDRESS);
         if (address == null) {
             return null;
         }
 
-        Email.Type type =
-                Email.Type.fromValue(c.getInt(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE)));
+        Email.Type type = Email.Type.fromValue(getInt(c, ContactsContract.CommonDataKinds.Email.TYPE));
         if (!type.equals(Email.Type.CUSTOM)) {
             return new Email(address, type);
         }
 
-        return new Email(address,
-                c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Email.LABEL)));
+        return new Email(address, getString(c, ContactsContract.CommonDataKinds.Email.LABEL));
     }
 
     String getPhotoUri() {
-        return c.getString(c.getColumnIndex(ContactsContract.Data.PHOTO_URI));
+        return getString(c, ContactsContract.Data.PHOTO_URI);
+    }
+
+    private String getString(Cursor c, String column) {
+        int index = c.getColumnIndex(column);
+        return index == -1 ? null : c.getString(index);
+    }
+
+    private Integer getInt(Cursor c, String column) {
+        int index = c.getColumnIndex(column);
+        return index == -1 ? null : c.getInt(index);
+    }
+
+    private  Long getLong(Cursor c, String column) {
+        int index = c.getColumnIndex(column);
+        return index == -1 ? null : c.getLong(index);
     }
 }

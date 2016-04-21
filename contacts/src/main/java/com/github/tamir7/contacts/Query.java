@@ -33,11 +33,12 @@ import java.util.Set;
 public final class Query {
     private final Context context;
     private final Map<Contact.Field, Object> contains = new HashMap<>();
-    private final List<Contact.Field> include = Arrays.asList(Contact.Field.values());
+    private Set<Contact.Field> include = new HashSet<>();
     private boolean hasPhoneNumber = false;
 
     Query(Context context) {
         this.context = context;
+        include.addAll(Arrays.asList(Contact.Field.values()));
     }
 
     public Query whereContains(Contact.Field field, Object value) {
@@ -51,6 +52,7 @@ public final class Query {
     }
 
     public Query include(Contact.Field... fields) {
+        include.clear();
         include.addAll(Arrays.asList(fields));
         return this;
     }
