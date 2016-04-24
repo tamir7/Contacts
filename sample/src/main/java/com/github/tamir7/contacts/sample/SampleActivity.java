@@ -29,8 +29,6 @@ public class SampleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sample);
 
         checkPermission();
-
-
     }
 
     private void queryContacts() {
@@ -39,8 +37,8 @@ public class SampleActivity extends AppCompatActivity {
             public Void call() throws Exception {
                 Query q = Contacts.getQuery();
                 q.hasPhoneNumber();
-                q.include(Contact.Field.DisplayName);
-                q.whereContains(Contact.Field.DisplayName, "Hadar");
+                q.include(Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneType, Contact.Field.PhoneLabel);
+                q.whereStartsWith(Contact.Field.PhoneNumber, "+972");
                 List<Contact> contacts = q.find();
                 Log.e(TAG, new Gson().toJson(contacts));
                 return null;

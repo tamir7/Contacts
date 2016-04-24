@@ -34,34 +34,38 @@ public final class Contact {
 
     interface AbstractField {
         String getMimeType();
-        List<String> getColumns();
+        String getColumn();
     }
 
     public enum Field implements AbstractField {
         DisplayName(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.Data.DISPLAY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER,
-                ContactsContract.CommonDataKinds.Phone.TYPE,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER),
+        PhoneType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Phone.TYPE),
+        PhoneLabel(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.LABEL),
         Email(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.TYPE,
+                ContactsContract.CommonDataKinds.Email.ADDRESS),
+        EmailType(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Email.TYPE),
+        EmailLabel(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Email.LABEL),
         PhotoUri(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.Data.PHOTO_URI);
 
-        private final List<String> columns;
+        private final String column;
         private final String mimeType;
 
-        Field(String mimeType, String... columns) {
+        Field(String mimeType, String column) {
             this.mimeType = mimeType;
-            this.columns = Arrays.asList(columns);
+            this.column = column;
         }
 
         @Override
-        public List<String> getColumns() {
-            return columns;
+        public String getColumn() {
+            return column;
         }
 
         @Override
@@ -76,17 +80,17 @@ public final class Contact {
         MimeType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.Data.MIMETYPE);
 
-        private final List<String> columns;
+        private final String column;
         private final String mimeType;
 
-        InternalField(String mimeType, String... columns) {
+        InternalField(String mimeType, String column) {
             this.mimeType = mimeType;
-            this.columns = Arrays.asList(columns);
+            this.column = column;
         }
 
         @Override
-        public List<String> getColumns() {
-            return columns;
+        public String getColumn() {
+            return column;
         }
 
         @Override

@@ -19,7 +19,6 @@ package com.github.tamir7.contacts;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +36,7 @@ public final class Query {
     private final Context context;
     private final Map<Contact.Field, Object> contains = new HashMap<>();
     private Set<Contact.Field> include = new HashSet<>();
+    private Map<Contact.Field, Object> startsWith = new HashMap<>();
     private boolean hasPhoneNumber = false;
 
     Query(Context context) {
@@ -53,6 +53,18 @@ public final class Query {
      */
     public Query whereContains(Contact.Field field, Object value) {
         contains.put(field, value);
+        return this;
+    }
+
+    /**
+     * Add a constraint to the query for finding string values that start with the provided string.
+     *
+     * @param field     The field that the string to match is stored in.
+     * @param value     The substring that the value must start with.
+     * @return          this, so you can chain this call.
+     */
+    public Query whereStartsWith(Contact.Field field, Object value) {
+        startsWith.put(field, value);
         return this;
     }
 
@@ -140,11 +152,11 @@ public final class Query {
         Set<String> projection = new HashSet<>();
 
         for (Contact.AbstractField field : Contact.InternalField.values()) {
-            projection.addAll(field.getColumns());
+            projection.add(field.getColumn());
         }
 
         for (Contact.AbstractField field : include) {
-            projection.addAll(field.getColumns());
+            projection.add(field.getColumn());
         }
 
         return projection.toArray(new String[projection.size()]);
@@ -170,10 +182,13 @@ public final class Query {
         where = addWhere(where, Where.in(ContactsContract.Data.MIMETYPE, new ArrayList<>(mimeTypes)));
 
         for (Map.Entry<Contact.Field, Object> entry : contains.entrySet()) {
-            where = addWhere(where, Where.contains(entry.getKey().getColumns().get(0), entry.getValue()));
+            where = addWhere(where, Where.contains(entry.getKey().getColumn(), entry.getValue()));
         }
 
-        Log.e("Temp", where.toString());
+        for (Map.Entry<Contact.Field, Object> entry : startsWith.entrySet()) {
+            where = addWhere(where, Where.startsWith(entry.getKey().getColumn(), entry.getValue()));
+        }
+
         return where.toString();
     }
 
