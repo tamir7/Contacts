@@ -45,17 +45,29 @@ q.whereContains(Contact.Field.DisplayName, "some string");
 List<Contact> contacts = q.find();
 ```
 
+Find all numbers with a specific E164 code
+
+```java
+Query q = Contacts.getQuery();
+q.whereStartsWith(Contact.Field.PhoneNumber, "+972");
+List<Contact> contacts = q.find();
+```
+
+Find a Contact by phone Number
+
+```java
+Query q = Contacts.getQuery();
+q.whereEqualTo(Contact.Field.PhoneNumber, "Some phone Number (in E164 format)");
+Contact contact = q.findFirst();
+```
+
 ## Installation
+
+Published to JCenter
 
 ```java
 
-repositories {
-    maven {
-        url  "http://dl.bintray.com/tamir7/maven" 
-    }
-}
-
- compile 'com.github.tamir7.contacts:contacts:1.0.0'
+ compile 'com.github.tamir7.contacts:contacts:1.0.1'
 ```
 
 ## License
