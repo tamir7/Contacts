@@ -37,6 +37,7 @@ public final class Query {
     private final Map<Contact.Field, Object> contains = new HashMap<>();
     private Set<Contact.Field> include = new HashSet<>();
     private Map<Contact.Field, Object> startsWith = new HashMap<>();
+    private Map<Contact.Field, Object> equalTo = new HashMap<>();
     private boolean hasPhoneNumber = false;
 
     Query(Context context) {
@@ -65,6 +66,18 @@ public final class Query {
      */
     public Query whereStartsWith(Contact.Field field, Object value) {
         startsWith.put(field, value);
+        return this;
+    }
+
+    /**
+     * Add a constraint to the query for finding values that equal the provided value.
+     *
+     * @param field     The field that the value to match is stored in.
+     * @param value     The value that the field value must be equal to.
+     * @return          this, so you can chain this call.
+     */
+    public Query whereEqualTo(Contact.Field field, Object value) {
+        equalTo.put(field, value);
         return this;
     }
 
@@ -197,6 +210,10 @@ public final class Query {
 
         for (Map.Entry<Contact.Field, Object> entry : startsWith.entrySet()) {
             where = addWhere(where, Where.startsWith(entry.getKey().getColumn(), entry.getValue()));
+        }
+
+        for (Map.Entry<Contact.Field, Object> entry : equalTo.entrySet()) {
+            where = addWhere(where, Where.equalTo(entry.getKey().getColumn(), entry.getValue()));
         }
 
         return where.toString();

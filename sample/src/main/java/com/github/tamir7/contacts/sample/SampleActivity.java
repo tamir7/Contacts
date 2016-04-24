@@ -38,7 +38,7 @@ public class SampleActivity extends AppCompatActivity {
                 Query q = Contacts.getQuery();
                 q.hasPhoneNumber();
                 q.include(Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneType, Contact.Field.PhoneLabel);
-                q.whereStartsWith(Contact.Field.PhoneNumber, "+972");
+                q.whereEqualTo(Contact.Field.PhoneNumber, "+972508914280");
                 List<Contact> contacts = q.find();
                 Log.e(TAG, new Gson().toJson(contacts));
                 return null;
