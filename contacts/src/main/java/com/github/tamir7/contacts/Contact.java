@@ -32,6 +32,10 @@ public final class Contact {
     private final Set<String> photoUris = new HashSet<>();
     private final Set<Email> emails = new HashSet<>();
 
+    public interface Comparator<T> {
+        T compare(T first, T second);
+    }
+
     interface AbstractField {
         String getMimeType();
         String getColumn();
@@ -155,5 +159,98 @@ public final class Contact {
      */
     public List<Email> getEmails() {
         return Arrays.asList(emails.toArray(new Email[emails.size()]));
+    }
+
+    /**
+     * Gets the "best" email address, Using the comparator.
+     *
+     * @param emailComparator  The comparator used to compare Emails.
+     *
+     * @return the "Best" Email
+     */
+    public Email getBestEmail(Comparator<Email> emailComparator) {
+        return getBestValue(getEmails(), emailComparator);
+    }
+
+    /**
+     * Gets the "best" email address using the default or the installed comparator.
+     * Default Comparator returns the first email.
+     *
+     * @return the "Best" Email
+     */
+    public Email getBestEmail() {
+        return getBestEmail(Contacts.getEmailComparator());
+    }
+
+    /**
+     * Gets the "best" phone number, Using the comparator.
+     *
+     * @param phoneNumberComparator  The comparator used to compare Phone Numbers.
+     *
+     * @return the "Best" Email
+     */
+    public PhoneNumber getBestPhoneNumber(Comparator<PhoneNumber> phoneNumberComparator) {
+        return getBestValue(getPhoneNumbers(), phoneNumberComparator);
+    }
+
+    /**
+     * Gets the "best" phone number using the default or the installed comparator.
+     * Default Comparator returns the first phone number.
+     *
+     * @return the "Best" Phone Number
+     */
+    public PhoneNumber getBestPhoneNumber() {
+        return getBestPhoneNumber(Contacts.getPhoneNumberComparator());
+    }
+
+    /**
+     * Gets the "best" display name, Using the comparator.
+     *
+     * @param displayNameComparator  The comparator used to compare display names.
+     *
+     * @return the "Best" Display Name
+     */
+    public String getBestDisplayName(Comparator<String> displayNameComparator) {
+        return getBestValue(getDisplayNames(), displayNameComparator);
+    }
+
+    /**
+     * Gets the "best" display name using the default or the installed comparator.
+     * Default Comparator returns the first display name.
+     *
+     * @return the "Best" display name
+     */
+    public String getBestDisplayName() {
+        return getBestDisplayName(Contacts.getDisplayNameComparator());
+    }
+
+    /**
+     * Gets the "best" photo Uri Using the comparator.
+     *
+     * @param photoUriComparator  The comparator used to compare photo uri's.
+     *
+     * @return the "Best" Photo URI
+     */
+    public String getBestPhotoUri(Comparator<String> photoUriComparator) {
+        return getBestValue(getPhotoUris(), photoUriComparator);
+    }
+
+    /**
+     * Gets the "best" photo uri using the default or the installed comparator.
+     * Default Comparator returns the first photoUri.
+     *
+     * @return the "Best" photo URI
+     */
+    public String getBestPhotoUri() {
+        return getBestPhotoUri(Contacts.getPhotoUriComparator());
+    }
+
+    private <T> T getBestValue(List<T> values, Comparator<T> comparator) {
+        T best = null;
+        for (T value : values) {
+            best = best == null ? value : comparator.compare(best, value);
+        }
+
+        return best;
     }
 }

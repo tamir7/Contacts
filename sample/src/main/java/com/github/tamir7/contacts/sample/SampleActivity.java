@@ -11,9 +11,7 @@ import android.util.Log;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
-import com.google.gson.Gson;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import bolts.Continuation;
@@ -39,8 +37,8 @@ public class SampleActivity extends AppCompatActivity {
                 q.hasPhoneNumber();
                 q.include(Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneType, Contact.Field.PhoneLabel);
                 q.whereEqualTo(Contact.Field.PhoneNumber, "+972508914280");
-                List<Contact> contacts = q.find();
-                Log.e(TAG, new Gson().toJson(contacts));
+                Contact contact = q.findFirst();
+                Log.e(TAG, contact.getBestDisplayName());
                 return null;
             }
         }).continueWith(new Continuation<Void, Void>() {
