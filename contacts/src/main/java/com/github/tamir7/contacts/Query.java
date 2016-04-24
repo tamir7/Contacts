@@ -123,6 +123,16 @@ public final class Query {
         return new ArrayList<>(contactsMap.values());
     }
 
+    /**
+     * Retrieves the first contact that satisfy this query.
+     *
+     * @return the First contact obeying the conditions set in this query.
+     */
+    public Contact findFirst() {
+        List<Contact> contacts = find();
+        return contacts.isEmpty() ? null : contacts.get(0);
+    }
+
     private void updateContact(Contact contact, CursorHelper helper) {
         String displayName = helper.getDisplayName();
         if (displayName != null) {
