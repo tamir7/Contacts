@@ -1,6 +1,6 @@
 # Contacts
 
-Android Contats API.
+Android Contacts API.
 
 ## Quick Start
 
