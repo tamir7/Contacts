@@ -31,6 +31,7 @@ public final class Contact {
     private final Set<PhoneNumber> phoneNumbers = new HashSet<>();
     private final Set<String> photoUris = new HashSet<>();
     private final Set<Email> emails = new HashSet<>();
+    private final Set<Event> events = new HashSet<>();
 
     public interface Comparator<T> {
         T compare(T first, T second);
@@ -57,7 +58,13 @@ public final class Contact {
         EmailLabel(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Email.LABEL),
         PhotoUri(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.Data.PHOTO_URI);
+                ContactsContract.Data.PHOTO_URI),
+        EventStartDate(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Event.START_DATE),
+        EventType(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Event.TYPE),
+        EventLabel(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Event.LABEL);
 
         private final String column;
         private final String mimeType;
@@ -125,6 +132,35 @@ public final class Contact {
         return this;
     }
 
+    Contact addEvent(Event event) {
+        events.add(event);
+        return this;
+    }
+
+    boolean contains(Field field) {
+        switch (field) {
+            case DisplayName:
+                return !displayNames.isEmpty();
+            case PhoneNumber:
+            case PhoneType:
+            case PhoneLabel:
+                return !phoneNumbers.isEmpty();
+            case Email:
+            case EmailType:
+            case EmailLabel:
+                return !emails.isEmpty();
+            case PhotoUri:
+                return !photoUris.isEmpty();
+            case EventStartDate:
+            case EventType:
+            case EventLabel:
+                return !events.isEmpty();
+        }
+
+        // we should never get here.
+        throw new IllegalArgumentException(String.format("Field %s is not supported", field));
+    }
+
     /**
      * Gets a list of all display names the contact has.
      *
@@ -159,6 +195,15 @@ public final class Contact {
      */
     public List<Email> getEmails() {
         return Arrays.asList(emails.toArray(new Email[emails.size()]));
+    }
+
+    /**
+     * Gets a list of all events the contact has.
+     *
+     * @return A List of emails.
+     */
+    public List<Event> getEvents() {
+        return Arrays.asList(events.toArray(new Event[events.size()]));
     }
 
     /**
@@ -252,5 +297,34 @@ public final class Contact {
         }
 
         return best;
+    }
+
+    /**
+     * Gets the birthday event if exists.
+     *
+     * @return Birthday event or null.
+     */
+    public Event getBirthday() {
+        return getEvent(Event.Type.BIRTHDAY);
+    }
+
+    /**
+     * Gets the anniversary event if exists.
+     *
+     * @return Anniversary event or null.
+     */
+    public Event getAnniversary() {
+        return getEvent(Event.Type.ANNIVERSARY);
+
+    }
+
+    private Event getEvent(Event.Type type) {
+        for (Event event: events) {
+            if (type.equals(event.getType())) {
+                return event;
+            }
+        }
+
+        return null;
     }
 }

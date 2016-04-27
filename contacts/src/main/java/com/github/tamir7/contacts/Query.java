@@ -38,6 +38,7 @@ public final class Query {
     private Set<Contact.Field> include = new HashSet<>();
     private Map<Contact.Field, Object> startsWith = new HashMap<>();
     private Map<Contact.Field, Object> equalTo = new HashMap<>();
+    private Set<Contact.Field> exists = new HashSet<>();
     private boolean hasPhoneNumber = false;
 
     Query(Context context) {
@@ -78,6 +79,20 @@ public final class Query {
      */
     public Query whereEqualTo(Contact.Field field, Object value) {
         equalTo.put(field, value);
+        return this;
+    }
+
+    /**
+     * Add a constraint for finding objects that contain the given key.
+     * Unlike all other constraints this one is executed in code (and not in sql).
+     * This is because most of the columns in this table are generic and I cannot query against them.
+     * (for example Email address and Phone Number are in the same column named data1).
+     *
+     * @param key The key that should exist.
+     * @return this, so you can chain this call.
+     */
+    public Query whereExists(Contact.Field key) {
+        exists.add(key);
         return this;
     }
 
@@ -133,7 +148,26 @@ public final class Query {
             c.close();
         }
 
-        return new ArrayList<>(contactsMap.values());
+        List<Contact> contacts;
+        if (!exists.isEmpty() && !contactsMap.isEmpty()) {
+            contacts = new ArrayList<>();
+            for (Contact contact: contactsMap.values()) {
+                boolean existsFlag = true;
+                for (Contact.Field existsField: exists) {
+                    if (!contact.contains(existsField)) {
+                        existsFlag = false;
+                        break;
+                    }
+                }
+                if (existsFlag) {
+                    contacts.add(contact);
+                }
+            }
+        } else {
+            contacts = new ArrayList<>(contactsMap.values());
+        }
+
+        return contacts;
     }
 
     /**
@@ -167,6 +201,11 @@ public final class Query {
             Email email = helper.getEmail();
             if (email != null) {
                 contact.addEmail(email);
+            }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)) {
+            Event event = helper.getEvent();
+            if (event != null) {
+                contact.addEvent(event);
             }
         }
     }

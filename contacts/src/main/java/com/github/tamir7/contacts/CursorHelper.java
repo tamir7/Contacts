@@ -44,8 +44,9 @@ class CursorHelper {
             return null;
         }
 
-        PhoneNumber.Type type = PhoneNumber.Type.fromValue(getInt(c,
-                ContactsContract.CommonDataKinds.Phone.TYPE));
+        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Phone.TYPE);
+        PhoneNumber.Type type = typeValue == null ? PhoneNumber.Type.UNKNOWN :
+                PhoneNumber.Type.fromValue(typeValue);
         if (!type.equals(PhoneNumber.Type.CUSTOM)) {
             return new PhoneNumber(normalizedNumber, type);
         }
@@ -60,7 +61,8 @@ class CursorHelper {
             return null;
         }
 
-        Email.Type type = Email.Type.fromValue(getInt(c, ContactsContract.CommonDataKinds.Email.TYPE));
+        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Email.TYPE);
+        Email.Type type = typeValue == null ? Email.Type.UNKNOWN : Email.Type.fromValue(typeValue);
         if (!type.equals(Email.Type.CUSTOM)) {
             return new Email(address, type);
         }
@@ -70,6 +72,22 @@ class CursorHelper {
 
     String getPhotoUri() {
         return getString(c, ContactsContract.Data.PHOTO_URI);
+    }
+
+
+    Event getEvent() {
+        String startDate = getString(c, ContactsContract.CommonDataKinds.Event.START_DATE);
+        if (startDate == null) {
+            return null;
+        }
+
+        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Event.TYPE);
+        Event.Type type = typeValue ==  null ? Event.Type.UNKNOWN : Event.Type.fromValue(typeValue);
+        if (!type.equals(Event.Type.CUSTOM)) {
+            return new Event(startDate, type);
+        }
+
+        return new Event(startDate, getString(c, ContactsContract.CommonDataKinds.Event.LABEL));
     }
 
     private String getString(Cursor c, String column) {
