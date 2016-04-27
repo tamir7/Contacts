@@ -67,7 +67,7 @@ Published to JCenter
 
 ```java
 
- compile 'com.github.tamir7.contacts:contacts:1.0.1'
+ compile 'com.github.tamir7.contacts:contacts:1.0.2'
 ```
 
 ## License
