@@ -1,6 +1,6 @@
 # Contacts
 
-Android Contats API.
+Android Contacts API.
 
 ## Quick Start
 
@@ -18,7 +18,7 @@ public class MyApplication extends Application {
 Get All Contacts 
 
 ```java
-List<Contact> contacts = Contacts.getQuery.find();
+List<Contact> contacts = Contacts.getQuery().find();
 ```
 
 Get Contacts with phone numbers only
