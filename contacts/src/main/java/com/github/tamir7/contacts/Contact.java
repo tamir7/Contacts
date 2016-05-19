@@ -39,6 +39,7 @@ public final class Contact {
 
     interface AbstractField {
         String getMimeType();
+
         String getColumn();
     }
 
@@ -47,6 +48,8 @@ public final class Contact {
                 ContactsContract.Data.DISPLAY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER),
+        PhoneNumberRaw(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Phone.NUMBER),
         PhoneType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.TYPE),
         PhoneLabel(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
@@ -110,7 +113,8 @@ public final class Contact {
         }
     }
 
-    Contact() {}
+    Contact() {
+    }
 
     Contact addDisplayName(String displayName) {
         displayNames.add(displayName);
@@ -209,8 +213,7 @@ public final class Contact {
     /**
      * Gets the "best" email address, Using the comparator.
      *
-     * @param emailComparator  The comparator used to compare Emails.
-     *
+     * @param emailComparator The comparator used to compare Emails.
      * @return the "Best" Email
      */
     public Email getBestEmail(Comparator<Email> emailComparator) {
@@ -230,8 +233,7 @@ public final class Contact {
     /**
      * Gets the "best" phone number, Using the comparator.
      *
-     * @param phoneNumberComparator  The comparator used to compare Phone Numbers.
-     *
+     * @param phoneNumberComparator The comparator used to compare Phone Numbers.
      * @return the "Best" Email
      */
     public PhoneNumber getBestPhoneNumber(Comparator<PhoneNumber> phoneNumberComparator) {
@@ -251,8 +253,7 @@ public final class Contact {
     /**
      * Gets the "best" display name, Using the comparator.
      *
-     * @param displayNameComparator  The comparator used to compare display names.
-     *
+     * @param displayNameComparator The comparator used to compare display names.
      * @return the "Best" Display Name
      */
     public String getBestDisplayName(Comparator<String> displayNameComparator) {
@@ -272,8 +273,7 @@ public final class Contact {
     /**
      * Gets the "best" photo Uri Using the comparator.
      *
-     * @param photoUriComparator  The comparator used to compare photo uri's.
-     *
+     * @param photoUriComparator The comparator used to compare photo uri's.
      * @return the "Best" Photo URI
      */
     public String getBestPhotoUri(Comparator<String> photoUriComparator) {
@@ -319,7 +319,7 @@ public final class Contact {
     }
 
     private Event getEvent(Event.Type type) {
-        for (Event event: events) {
+        for (Event event : events) {
             if (type.equals(event.getType())) {
                 return event;
             }

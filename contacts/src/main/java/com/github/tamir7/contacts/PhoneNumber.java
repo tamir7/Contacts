@@ -22,6 +22,7 @@ import android.provider.ContactsContract;
  * Represents a phone number
  */
 public class PhoneNumber {
+    private final String number;
     private final String normalizedNumber;
     private final Type type;
     private final String label;
@@ -100,16 +101,18 @@ public class PhoneNumber {
         }
     }
 
-    PhoneNumber(String normalizedNumber, Type type) {
-        this.normalizedNumber = normalizedNumber;
-        this.type = type;
-        this.label = null;
-    }
-
-    PhoneNumber(String normalizedNumber, String label) {
+    PhoneNumber(String number, String normalizedNumber, String label) {
+        this.number = number;
         this.normalizedNumber = normalizedNumber;
         this.type = Type.CUSTOM;
         this.label = label;
+    }
+
+    public PhoneNumber(String number, String normalizedNumber, Type type) {
+        this.number = number;
+        this.normalizedNumber = normalizedNumber;
+        this.type = type;
+        this.label = null;
     }
 
     /**
@@ -119,6 +122,15 @@ public class PhoneNumber {
      */
     public String getLabel() {
         return label;
+    }
+
+    /**
+     * Gets the phone number.
+     *
+     * @return phone number.
+     */
+    public String getNumber() {
+        return number;
     }
 
     /**
@@ -146,13 +158,27 @@ public class PhoneNumber {
 
         PhoneNumber that = (PhoneNumber) o;
 
-        return normalizedNumber.equals(that.normalizedNumber) && type == that.type &&
-                !(label != null ? !label.equals(that.label) : that.label != null);
+        return type == that.type &&
+                !(number != null ?
+                        !number.equals(that.number) :
+                        that.number != null) &&
+                !(normalizedNumber != null ?
+                        !normalizedNumber.equals(that.normalizedNumber) :
+                        that.normalizedNumber != null) &&
+                !(label != null ?
+                        !label.equals(that.label) :
+                        that.label != null);
     }
 
     @Override
     public int hashCode() {
-        int result = normalizedNumber.hashCode();
+        int result = 1;
+        if (number != null) {
+            result = number.hashCode();
+        }
+        if (normalizedNumber != null) {
+            result = normalizedNumber.hashCode();
+        }
         result = 31 * result + type.hashCode();
         result = 31 * result + (label != null ? label.hashCode() : 0);
         return result;
