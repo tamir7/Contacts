@@ -39,8 +39,9 @@ class CursorHelper {
     }
 
     PhoneNumber getPhoneNumber() {
+        String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);
         String normalizedNumber = getString(c, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
-        if (normalizedNumber == null) {
+        if (number == null && normalizedNumber == null) {
             return null;
         }
 
@@ -48,10 +49,10 @@ class CursorHelper {
         PhoneNumber.Type type = typeValue == null ? PhoneNumber.Type.UNKNOWN :
                 PhoneNumber.Type.fromValue(typeValue);
         if (!type.equals(PhoneNumber.Type.CUSTOM)) {
-            return new PhoneNumber(normalizedNumber, type);
+            return new PhoneNumber(number, normalizedNumber, type);
         }
 
-        return new PhoneNumber(normalizedNumber,
+        return new PhoneNumber(number, normalizedNumber,
                 getString(c, ContactsContract.CommonDataKinds.Phone.LABEL));
     }
 
@@ -82,7 +83,7 @@ class CursorHelper {
         }
 
         Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Event.TYPE);
-        Event.Type type = typeValue ==  null ? Event.Type.UNKNOWN : Event.Type.fromValue(typeValue);
+        Event.Type type = typeValue == null ? Event.Type.UNKNOWN : Event.Type.fromValue(typeValue);
         if (!type.equals(Event.Type.CUSTOM)) {
             return new Event(startDate, type);
         }
@@ -100,7 +101,7 @@ class CursorHelper {
         return index == -1 ? null : c.getInt(index);
     }
 
-    private  Long getLong(Cursor c, String column) {
+    private Long getLong(Cursor c, String column) {
         int index = c.getColumnIndex(column);
         return index == -1 ? null : c.getLong(index);
     }
