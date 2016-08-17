@@ -53,10 +53,10 @@ class CursorHelper {
         PhoneNumber.Type type = typeValue == null ? PhoneNumber.Type.UNKNOWN :
                 PhoneNumber.Type.fromValue(typeValue);
         if (!type.equals(PhoneNumber.Type.CUSTOM)) {
-            return new PhoneNumber(normalizedNumber, type, normalizedNumber);
+            return new PhoneNumber(number, type, normalizedNumber);
         }
 
-        return new PhoneNumber(normalizedNumber,
+        return new PhoneNumber(number,
                 getString(c, ContactsContract.CommonDataKinds.Phone.LABEL), normalizedNumber);
     }
 

@@ -13,6 +13,7 @@ import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -36,9 +37,19 @@ public class SampleActivity extends AppCompatActivity {
             @Override
             public Void call() throws Exception {
                 Query q = Contacts.getQuery();
-                q.hasPhoneNumber();
-                q.include(Contact.Field.DisplayName, Contact.Field.EventStartDate, Contact.Field.EventLabel, Contact.Field.EventType);
-                q.whereExists(Contact.Field.EventStartDate);
+                q.include(Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email);
+                Query q1 = Contacts.getQuery();
+                q1.whereEqualTo(Contact.Field.DisplayName, "Tamir Shomer");
+                q1.hasPhoneNumber();
+
+                Query q2 = Contacts.getQuery();
+                q2.whereStartsWith(Contact.Field.DisplayName, "Guy");
+                q2.hasPhoneNumber();
+                List<Query> queries = new ArrayList<>();
+                queries.add(q1);
+                queries.add(q2);
+                q.or(queries);
+
                 List<Contact> contacts = q.find();
                 Log.e(TAG, new Gson().toJson(contacts));
                 return null;

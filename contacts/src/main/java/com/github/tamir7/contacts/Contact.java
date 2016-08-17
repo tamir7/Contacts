@@ -28,15 +28,11 @@ import java.util.Set;
  * Represents a compound contact. aggregating all phones, email and photo's a contact has.
  */
 public final class Contact {
-    private final Set<String> displayNames = new HashSet<>();
+    private String displayName;
     private final Set<PhoneNumber> phoneNumbers = new HashSet<>();
-    private final Set<String> photoUris = new HashSet<>();
+    private String photoUri;
     private final Set<Email> emails = new HashSet<>();
     private final Set<Event> events = new HashSet<>();
-
-    public interface Comparator<T> {
-        T compare(T first, T second);
-    }
 
     interface AbstractField {
         String getMimeType();
@@ -44,8 +40,7 @@ public final class Contact {
     }
 
     public enum Field implements AbstractField {
-        DisplayName(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.Data.DISPLAY_NAME),
+        DisplayName(null, ContactsContract.Data.DISPLAY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NUMBER),
         PhoneType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
@@ -61,8 +56,7 @@ public final class Contact {
                 ContactsContract.CommonDataKinds.Email.TYPE),
         EmailLabel(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Email.LABEL),
-        PhotoUri(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.Data.PHOTO_URI),
+        PhotoUri(null, ContactsContract.Data.PHOTO_URI),
         EventStartDate(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Event.START_DATE),
         EventType(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
@@ -90,10 +84,8 @@ public final class Contact {
     }
 
     enum InternalField implements AbstractField {
-        ContactId(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.RawContacts.CONTACT_ID),
-        MimeType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.Data.MIMETYPE);
+        ContactId(null, ContactsContract.RawContacts.CONTACT_ID),
+        MimeType(null, ContactsContract.Data.MIMETYPE);
 
         private final String column;
         private final String mimeType;
@@ -117,7 +109,7 @@ public final class Contact {
     Contact() {}
 
     Contact addDisplayName(String displayName) {
-        displayNames.add(displayName);
+        this.displayName = displayName;
         return this;
     }
 
@@ -127,7 +119,7 @@ public final class Contact {
     }
 
     Contact addPhotoUri(String photoUri) {
-        photoUris.add(photoUri);
+        this.photoUri = photoUri;
         return this;
     }
 
@@ -141,38 +133,13 @@ public final class Contact {
         return this;
     }
 
-    boolean contains(Field field) {
-        switch (field) {
-            case DisplayName:
-                return !displayNames.isEmpty();
-            case PhoneNumber:
-            case PhoneType:
-            case PhoneLabel:
-            case PhoneNormalizedNumber:
-                return !phoneNumbers.isEmpty();
-            case Email:
-            case EmailType:
-            case EmailLabel:
-                return !emails.isEmpty();
-            case PhotoUri:
-                return !photoUris.isEmpty();
-            case EventStartDate:
-            case EventType:
-            case EventLabel:
-                return !events.isEmpty();
-        }
-
-        // we should never get here.
-        throw new IllegalArgumentException(String.format("Field %s is not supported", field));
-    }
-
     /**
-     * Gets a list of all display names the contact has.
+     * Gets a the display name the contact.
      *
-     * @return A List of display names.
+     * @return Display Name.
      */
-    public List<String> getDisplayNames() {
-        return Arrays.asList(displayNames.toArray(new String[displayNames.size()]));
+    public String getDisplayName() {
+        return displayName;
     }
 
     /**
@@ -185,12 +152,12 @@ public final class Contact {
     }
 
     /**
-     * Gets a list of all photo uri's the contact has.
+     * Gets a contacts photo uri.
      *
-     * @return A List of photo uri's.
+     * @return Photo URI.
      */
-    public List<String> getPhotoUris() {
-        return Arrays.asList(photoUris.toArray(new String[photoUris.size()]));
+    public String getPhotoUri() {
+        return photoUri;
     }
 
     /**
@@ -209,99 +176,6 @@ public final class Contact {
      */
     public List<Event> getEvents() {
         return Arrays.asList(events.toArray(new Event[events.size()]));
-    }
-
-    /**
-     * Gets the "best" email address, Using the comparator.
-     *
-     * @param emailComparator  The comparator used to compare Emails.
-     *
-     * @return the "Best" Email
-     */
-    public Email getBestEmail(Comparator<Email> emailComparator) {
-        return getBestValue(getEmails(), emailComparator);
-    }
-
-    /**
-     * Gets the "best" email address using the default or the installed comparator.
-     * Default Comparator returns the first email.
-     *
-     * @return the "Best" Email
-     */
-    public Email getBestEmail() {
-        return getBestEmail(Contacts.getEmailComparator());
-    }
-
-    /**
-     * Gets the "best" phone number, Using the comparator.
-     *
-     * @param phoneNumberComparator  The comparator used to compare Phone Numbers.
-     *
-     * @return the "Best" Email
-     */
-    public PhoneNumber getBestPhoneNumber(Comparator<PhoneNumber> phoneNumberComparator) {
-        return getBestValue(getPhoneNumbers(), phoneNumberComparator);
-    }
-
-    /**
-     * Gets the "best" phone number using the default or the installed comparator.
-     * Default Comparator returns the first phone number.
-     *
-     * @return the "Best" Phone Number
-     */
-    public PhoneNumber getBestPhoneNumber() {
-        return getBestPhoneNumber(Contacts.getPhoneNumberComparator());
-    }
-
-    /**
-     * Gets the "best" display name, Using the comparator.
-     *
-     * @param displayNameComparator  The comparator used to compare display names.
-     *
-     * @return the "Best" Display Name
-     */
-    public String getBestDisplayName(Comparator<String> displayNameComparator) {
-        return getBestValue(getDisplayNames(), displayNameComparator);
-    }
-
-    /**
-     * Gets the "best" display name using the default or the installed comparator.
-     * Default Comparator returns the first display name.
-     *
-     * @return the "Best" display name
-     */
-    public String getBestDisplayName() {
-        return getBestDisplayName(Contacts.getDisplayNameComparator());
-    }
-
-    /**
-     * Gets the "best" photo Uri Using the comparator.
-     *
-     * @param photoUriComparator  The comparator used to compare photo uri's.
-     *
-     * @return the "Best" Photo URI
-     */
-    public String getBestPhotoUri(Comparator<String> photoUriComparator) {
-        return getBestValue(getPhotoUris(), photoUriComparator);
-    }
-
-    /**
-     * Gets the "best" photo uri using the default or the installed comparator.
-     * Default Comparator returns the first photoUri.
-     *
-     * @return the "Best" photo URI
-     */
-    public String getBestPhotoUri() {
-        return getBestPhotoUri(Contacts.getPhotoUriComparator());
-    }
-
-    private <T> T getBestValue(List<T> values, Comparator<T> comparator) {
-        T best = null;
-        for (T value : values) {
-            best = best == null ? value : comparator.compare(best, value);
-        }
-
-        return best;
     }
 
     /**

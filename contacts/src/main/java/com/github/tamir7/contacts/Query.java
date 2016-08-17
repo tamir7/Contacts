@@ -34,12 +34,10 @@ import java.util.Set;
  */
 public final class Query {
     private final Context context;
-    private final Map<Contact.Field, Object> contains = new HashMap<>();
+    private final Map<String, Where> mimeWhere = new HashMap<>();
+    private Where defaultWhere = null;
     private Set<Contact.Field> include = new HashSet<>();
-    private Map<Contact.Field, Object> startsWith = new HashMap<>();
-    private Map<Contact.Field, Object> equalTo = new HashMap<>();
-    private Set<Contact.Field> exists = new HashSet<>();
-    private boolean hasPhoneNumber = false;
+    private List<Query> innerQueries;
 
     Query(Context context) {
         this.context = context;
@@ -54,7 +52,7 @@ public final class Query {
      * @return          this, so you can chain this call.
      */
     public Query whereContains(Contact.Field field, Object value) {
-        contains.put(field, value);
+        addNewConstraint(field, Where.contains(field.getColumn(), value));
         return this;
     }
 
@@ -66,7 +64,7 @@ public final class Query {
      * @return          this, so you can chain this call.
      */
     public Query whereStartsWith(Contact.Field field, Object value) {
-        startsWith.put(field, value);
+        addNewConstraint(field, Where.startsWith(field.getColumn(), value));
         return this;
     }
 
@@ -78,21 +76,7 @@ public final class Query {
      * @return          this, so you can chain this call.
      */
     public Query whereEqualTo(Contact.Field field, Object value) {
-        equalTo.put(field, value);
-        return this;
-    }
-
-    /**
-     * Add a constraint for finding objects that contain the given key.
-     * Unlike all other constraints this one is executed in code (and not in sql).
-     * This is because most of the columns in this table are generic and I cannot query against them.
-     * (for example Email address and Phone Number are in the same column named data1).
-     *
-     * @param key The key that should exist.
-     * @return this, so you can chain this call.
-     */
-    public Query whereExists(Contact.Field key) {
-        exists.add(key);
+        addNewConstraint(field, Where.equalTo(field.getColumn(), value));
         return this;
     }
 
@@ -102,7 +86,21 @@ public final class Query {
      * @return this, so you can chain this call.
      */
     public Query hasPhoneNumber() {
-        hasPhoneNumber = true;
+        defaultWhere = addWhere(defaultWhere, Where.notEqualTo(ContactsContract.Data.HAS_PHONE_NUMBER, 0));
+        return this;
+    }
+
+    /**
+     * Constructs a query that is the or of the given queries.
+     * Previous calls to include are disregarded for the inner queries.
+     * Calling those functions on the returned query will have the desired effect.
+     * Calling where* functions on the return query is not permitted.
+     *
+     * @param queries The list of Queries to 'or' together.
+     * @return A query that is the 'or' of the passed in queries.
+     */
+    public Query or(List<Query> queries) {
+        innerQueries = queries;
         return this;
     }
 
@@ -124,9 +122,91 @@ public final class Query {
      * @return A list of all contacts obeying the conditions set in this query.
      */
     public List<Contact> find() {
+        List<Long> ids = new ArrayList<>();
+
+        if (innerQueries != null) {
+            for (Query query : innerQueries) {
+                ids.addAll(query.findInner());
+            }
+        } else {
+            if (mimeWhere.isEmpty()) {
+                return find(null);
+            }
+
+            for (Map.Entry<String, Where> entry : mimeWhere.entrySet()) {
+                ids = findIds(ids, entry.getKey(), entry.getValue());
+            }
+        }
+
+        return find(ids);
+    }
+
+    private List<Long> findIds(List<Long> ids, String mimeType, Where innerWhere) {
+        String[] projection = { ContactsContract.RawContacts.CONTACT_ID};
+        Where where = Where.equalTo(ContactsContract.Data.MIMETYPE, mimeType);
+        where = addWhere(where, innerWhere);
+        if (!ids.isEmpty()) {
+            where = addWhere(where, Where.in(ContactsContract.RawContacts.CONTACT_ID, new ArrayList<Object>(ids)));
+        }
+
+        Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                projection,
+                where.toString(),
+                null,
+                ContactsContract.RawContacts.CONTACT_ID);
+
+        List<Long> returnIds = new ArrayList<>();
+
+        if (c != null) {
+            while (c.moveToNext()) {
+                CursorHelper helper = new CursorHelper(c);
+                returnIds.add(helper.getContactId());
+            }
+
+            c.close();
+        }
+
+        return returnIds;
+    }
+
+    private List<Long> findInner() {
+        List<Long> ids = new ArrayList<>();
+
+        if (mimeWhere.isEmpty()) {
+            Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+                    new String[]{ContactsContract.RawContacts.CONTACT_ID},
+                    defaultWhere.toString(),
+                    null,
+                    ContactsContract.RawContacts.CONTACT_ID);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    CursorHelper helper = new CursorHelper(c);
+                    ids.add(helper.getContactId());
+                }
+
+                c.close();
+            }
+        } else {
+            for (Map.Entry<String, Where> entry : mimeWhere.entrySet()) {
+                ids = findIds(ids, entry.getKey(), entry.getValue());
+            }
+        }
+        return ids;
+    }
+
+    private List<Contact> find(List<Long> ids) {
+        Where where;
+        if (ids == null) {
+            where = defaultWhere;
+        } else if (ids.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            where = Where.in(ContactsContract.RawContacts.CONTACT_ID, new ArrayList<>(ids));
+        }
+
         Cursor c = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 buildProjection(),
-                buildSelection(),
+                addWhere(where, buildWhereFromInclude()).toString(),
                 null,
                 ContactsContract.Data.DISPLAY_NAME);
 
@@ -148,36 +228,26 @@ public final class Query {
             c.close();
         }
 
-        List<Contact> contacts;
-        if (!exists.isEmpty() && !contactsMap.isEmpty()) {
-            contacts = new ArrayList<>();
-            for (Contact contact: contactsMap.values()) {
-                boolean existsFlag = true;
-                for (Contact.Field existsField: exists) {
-                    if (!contact.contains(existsField)) {
-                        existsFlag = false;
-                        break;
-                    }
-                }
-                if (existsFlag) {
-                    contacts.add(contact);
-                }
-            }
-        } else {
-            contacts = new ArrayList<>(contactsMap.values());
-        }
-
-        return contacts;
+        return new ArrayList<>(contactsMap.values());
     }
 
-    /**
-     * Retrieves the first contact that satisfy this query.
-     *
-     * @return the First contact obeying the conditions set in this query.
-     */
-    public Contact findFirst() {
-        List<Contact> contacts = find();
-        return contacts.isEmpty() ? null : contacts.get(0);
+    private Where buildWhereFromInclude() {
+        Set<String> mimes = new HashSet<>();
+        for (Contact.Field field : include) {
+            if (field.getMimeType() != null) {
+                mimes.add(field.getMimeType());
+            }
+        }
+        return Where.in(ContactsContract.Data.MIMETYPE, new ArrayList<Object>(mimes));
+    }
+
+    private void addNewConstraint(Contact.Field field, Where where)  {
+        if (field.getMimeType() == null) {
+            defaultWhere = addWhere(defaultWhere, where);
+        } else {
+            Where existingWhere = mimeWhere.get(field.getMimeType());
+            mimeWhere.put(field.getMimeType(), addWhere(existingWhere, where));
+        }
     }
 
     private void updateContact(Contact contact, CursorHelper helper) {
@@ -222,40 +292,6 @@ public final class Query {
         }
 
         return projection.toArray(new String[projection.size()]);
-    }
-
-    private String buildSelection() {
-        Where where = null;
-
-        if (hasPhoneNumber) {
-            where = addWhere(null, Where.notEqualTo(ContactsContract.Data.HAS_PHONE_NUMBER, 0));
-        }
-
-        Set<String> mimeTypes = new HashSet<>();
-
-        for (Contact.AbstractField field : Contact.InternalField.values()) {
-            mimeTypes.add(field.getMimeType());
-        }
-
-        for (Contact.AbstractField field : include) {
-            mimeTypes.add(field.getMimeType());
-        }
-
-        where = addWhere(where, Where.in(ContactsContract.Data.MIMETYPE, new ArrayList<>(mimeTypes)));
-
-        for (Map.Entry<Contact.Field, Object> entry : contains.entrySet()) {
-            where = addWhere(where, Where.contains(entry.getKey().getColumn(), entry.getValue()));
-        }
-
-        for (Map.Entry<Contact.Field, Object> entry : startsWith.entrySet()) {
-            where = addWhere(where, Where.startsWith(entry.getKey().getColumn(), entry.getValue()));
-        }
-
-        for (Map.Entry<Contact.Field, Object> entry : equalTo.entrySet()) {
-            where = addWhere(where, Where.equalTo(entry.getKey().getColumn(), entry.getValue()));
-        }
-
-        return where.toString();
     }
 
     private Where addWhere(Where where, Where otherWhere) {
