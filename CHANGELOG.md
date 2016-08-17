@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.1.0 *(17-08-2016)*
+------------------
+  * Feature: Added phoneNumber field to PhoneNumber. (renamed old phoneNumber field to phoneNormalizedNumber). 
+  * Feature: Added OR constraints. (See readme for usage).
+  * Bug Fix:Fixed AND constrains.
+  
 Version 1.0.2 *(27-04-2016)*
 ------------------
   * Fetched Data: 
