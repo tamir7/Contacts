@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.0.2 *(27-04-2016)*
+------------------
+  * Fetched Data: 
+    * Added eventStartDate, eventType and event Label
+  * Implemented Query Constraints:
+    * whereExists (This constraint is implemented in code instead of sql. See function javadoc for more info.)
+ 
 Version 1.0.1 *(24-04-2016)*
 ------------------
   * Fetched Data: 
