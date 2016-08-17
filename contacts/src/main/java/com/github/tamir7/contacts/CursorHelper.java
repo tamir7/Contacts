@@ -38,6 +38,14 @@ class CursorHelper {
         return getString(c, ContactsContract.Data.DISPLAY_NAME);
     }
 
+    String getFirstName() {
+        return getString(c, Contact.Field.FirstName.getColumn());
+    }
+
+    String getLastName() {
+        return getString(c, Contact.Field.LastName.getColumn());
+    }
+
     PhoneNumber getPhoneNumber() {
         String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);
         if (number == null) {
