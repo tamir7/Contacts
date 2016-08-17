@@ -49,7 +49,7 @@ Find all numbers with a specific E164 code
 
 ```java
 Query q = Contacts.getQuery();
-q.whereStartsWith(Contact.Field.PhoneNumber, "+972");
+q.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+972");
 List<Contact> contacts = q.find();
 ```
 
@@ -57,8 +57,23 @@ Find a Contact by phone Number
 
 ```java
 Query q = Contacts.getQuery();
-q.whereEqualTo(Contact.Field.PhoneNumber, "Some phone Number (in E164 format)");
-Contact contact = q.findFirst();
+q.whereEqualTo(Contact.Field.PhoneNumber, "Some phone Number");
+List<Contact> contacts = q.find();
+```
+
+Get all Contacts that their name begins with a specific string OR their phone begings with a specific prefix.
+```java
+Query mainQuery = Contacts.getQuery();
+Query q1 = Contacts.getQuery();
+q1.whereStartsWith(Contact.Field.DisplayName, "Some String");
+Query q2 = Contacts.getQuery();
+q2.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+972");
+List<Query> qs = new ArrayList<>();
+qs.add(q1);
+qs.add(q2);
+mainQuery.or(qs);
+List<Contacts> contacts = mainQuery.find();
+
 ```
 
 ## Installation
@@ -67,7 +82,7 @@ Published to JCenter
 
 ```java
 
- compile 'com.github.tamir7.contacts:contacts:1.0.2'
+ compile 'com.github.tamir7.contacts:contacts:1.1.0'
 ```
 
 ## License
