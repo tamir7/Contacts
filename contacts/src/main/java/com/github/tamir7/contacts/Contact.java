@@ -16,6 +16,7 @@
 
 package com.github.tamir7.contacts;
 
+import android.annotation.SuppressLint;
 import android.provider.ContactsContract;
 
 import java.util.Arrays;
@@ -46,11 +47,14 @@ public final class Contact {
         DisplayName(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.Data.DISPLAY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER),
+                ContactsContract.CommonDataKinds.Phone.NUMBER),
         PhoneType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.TYPE),
         PhoneLabel(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.LABEL),
+        @SuppressLint("InlinedApi")
+        PhoneNormalizedNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER),
         Email(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Email.ADDRESS),
         EmailType(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
@@ -144,6 +148,7 @@ public final class Contact {
             case PhoneNumber:
             case PhoneType:
             case PhoneLabel:
+            case PhoneNormalizedNumber:
                 return !phoneNumbers.isEmpty();
             case Email:
             case EmailType:

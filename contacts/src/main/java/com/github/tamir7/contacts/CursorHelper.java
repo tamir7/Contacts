@@ -39,20 +39,25 @@ class CursorHelper {
     }
 
     PhoneNumber getPhoneNumber() {
-        String normalizedNumber = getString(c, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
-        if (normalizedNumber == null) {
+        String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);
+        if (number == null) {
             return null;
+        }
+
+        String normalizedNumber = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            normalizedNumber = getString(c, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER);
         }
 
         Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.Phone.TYPE);
         PhoneNumber.Type type = typeValue == null ? PhoneNumber.Type.UNKNOWN :
                 PhoneNumber.Type.fromValue(typeValue);
         if (!type.equals(PhoneNumber.Type.CUSTOM)) {
-            return new PhoneNumber(normalizedNumber, type);
+            return new PhoneNumber(normalizedNumber, type, normalizedNumber);
         }
 
         return new PhoneNumber(normalizedNumber,
-                getString(c, ContactsContract.CommonDataKinds.Phone.LABEL));
+                getString(c, ContactsContract.CommonDataKinds.Phone.LABEL), normalizedNumber);
     }
 
     Email getEmail() {

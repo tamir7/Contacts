@@ -22,9 +22,10 @@ import android.provider.ContactsContract;
  * Represents a phone number
  */
 public class PhoneNumber {
-    private final String normalizedNumber;
+    private final String number;
     private final Type type;
     private final String label;
+    private final String normalizedNumber;
 
     public enum Type {
         CUSTOM,
@@ -100,16 +101,27 @@ public class PhoneNumber {
         }
     }
 
-    PhoneNumber(String normalizedNumber, Type type) {
-        this.normalizedNumber = normalizedNumber;
+    PhoneNumber(String number, Type type, String normalizedNumber) {
+        this.number = number;
         this.type = type;
         this.label = null;
+        this.normalizedNumber = normalizedNumber;
     }
 
-    PhoneNumber(String normalizedNumber, String label) {
-        this.normalizedNumber = normalizedNumber;
+    PhoneNumber(String number, String label, String normalizedNumber) {
+        this.number = number;
         this.type = Type.CUSTOM;
         this.label = label;
+        this.normalizedNumber = normalizedNumber;
+    }
+
+    /**
+     * Gets the phone number.
+     *
+     * @return phone number.
+     */
+    public String getNumber() {
+        return normalizedNumber;
     }
 
     /**
@@ -146,15 +158,18 @@ public class PhoneNumber {
 
         PhoneNumber that = (PhoneNumber) o;
 
-        return normalizedNumber.equals(that.normalizedNumber) && type == that.type &&
-                !(label != null ? !label.equals(that.label) : that.label != null);
+        return number.equals(that.number) &&  type == that.type &&
+                !(label != null ? !label.equals(that.label) : that.label != null) &&
+                !(normalizedNumber != null ? !normalizedNumber.equals(that.normalizedNumber) :
+                        that.normalizedNumber != null);
     }
 
     @Override
     public int hashCode() {
-        int result = normalizedNumber.hashCode();
+        int result = number.hashCode();
         result = 31 * result + type.hashCode();
         result = 31 * result + (label != null ? label.hashCode() : 0);
+        result = 31 * result + (normalizedNumber != null ? normalizedNumber.hashCode() : 0);
         return result;
     }
 }
