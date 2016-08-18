@@ -28,6 +28,7 @@ import java.util.Set;
  * Represents a compound contact. aggregating all phones, email and photo's a contact has.
  */
 public final class Contact {
+    private Long contactId;
     private String displayName;
     private final Set<PhoneNumber> phoneNumbers = new HashSet<>();
     private String photoUri;
@@ -40,6 +41,7 @@ public final class Contact {
     }
 
     public enum Field implements AbstractField {
+        ContactId(null, ContactsContract.RawContacts.CONTACT_ID),
         DisplayName(null, ContactsContract.Data.DISPLAY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NUMBER),
@@ -108,6 +110,11 @@ public final class Contact {
 
     Contact() {}
 
+    Contact addContactId(Long contactId) {
+        this.contactId = contactId;
+        return this;
+    }
+
     Contact addDisplayName(String displayName) {
         this.displayName = displayName;
         return this;
@@ -134,7 +141,16 @@ public final class Contact {
     }
 
     /**
-     * Gets a the display name the contact.
+     * Gets contact id
+     *
+     * @return Contact ID
+     */
+    public Long getContactId() {
+        return contactId;
+    }
+
+    /**
+     * Gets the display name the contact.
      *
      * @return Display Name.
      */
