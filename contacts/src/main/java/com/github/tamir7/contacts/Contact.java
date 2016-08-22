@@ -29,8 +29,8 @@ import java.util.Set;
  */
 public final class Contact {
     private String displayName;
-    private String firstName;
-    private String lastName;
+    private String givenName;
+    private String familyName;
     private final Set<PhoneNumber> phoneNumbers = new HashSet<>();
     private String photoUri;
     private final Set<Email> emails = new HashSet<>();
@@ -43,9 +43,9 @@ public final class Contact {
 
     public enum Field implements AbstractField {
         DisplayName(null, ContactsContract.Data.DISPLAY_NAME),
-        FirstName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
+        GivenName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
            ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME),
-        LastName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
+        FamilyName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
            ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NUMBER),
@@ -119,13 +119,13 @@ public final class Contact {
         return this;
     }
 
-    Contact addFirstName(String firstName) {
-        this.firstName = firstName;
+    Contact addGivenName(String givenName) {
+        this.givenName = this.givenName;
         return this;
     }
 
-    Contact addLastName(String lastName) {
-        this.lastName = lastName;
+    Contact addFamilyName(String familyName) {
+        this.familyName = familyName;
         return this;
     }
 
@@ -159,21 +159,21 @@ public final class Contact {
     }
 
     /**
-     * Gets a the first name the contact.
+     * Gets a the given name the contact.
      *
-     * @return First Name.
+     * @return Given Name.
      */
-    public String getFirstName() {
-        return firstName;
+    public String getGivenName() {
+        return givenName;
     }
 
     /**
-     * Gets a the last name the contact.
+     * Gets a the Family name the contact.
      *
-     * @return Last Name.
+     * @return Family Name.
      */
-    public String getLastName() {
-        return lastName;
+    public String getFamilyName() {
+        return familyName;
     }
 
     /**

@@ -38,12 +38,12 @@ class CursorHelper {
         return getString(c, ContactsContract.Data.DISPLAY_NAME);
     }
 
-    String getFirstName() {
-        return getString(c, Contact.Field.FirstName.getColumn());
+    String getGivenName() {
+        return getString(c, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
     }
 
-    String getLastName() {
-        return getString(c, Contact.Field.LastName.getColumn());
+    String getFamilyName() {
+        return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
     }
 
     PhoneNumber getPhoneNumber() {
