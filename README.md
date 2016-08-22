@@ -82,7 +82,7 @@ Published to JCenter
 
 ```java
 
- compile 'com.github.tamir7.contacts:contacts:1.1.0'
+ compile 'com.github.tamir7.contacts:contacts:1.1.1'
 ```
 
 ## License
