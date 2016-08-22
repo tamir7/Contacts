@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.1.1 *(22-08-2016)*
+------------------
+   * Fetched Data: 
+    * Added StructuredName: GivenName and FamilyName
+
 Version 1.1.0 *(17-08-2016)*
 ------------------
   * Feature: Added phoneNumber field to PhoneNumber. (renamed old phoneNumber field to phoneNormalizedNumber). 
