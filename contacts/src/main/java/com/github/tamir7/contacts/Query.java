@@ -277,6 +277,16 @@ public final class Query {
             if (event != null) {
                 contact.addEvent(event);
             }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)) {
+            String firstName = helper.getFirstName();
+            if (firstName != null) {
+                contact.addFirstName(firstName);
+            }
+
+            String lastName = helper.getLastName();
+            if (lastName != null) {
+                contact.addLastName(lastName);
+            }
         }
     }
 
