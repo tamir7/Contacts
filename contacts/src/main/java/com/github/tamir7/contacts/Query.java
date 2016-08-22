@@ -278,14 +278,14 @@ public final class Query {
                 contact.addEvent(event);
             }
         } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)) {
-            String firstName = helper.getGivenName();
-            if (firstName != null) {
-                contact.addFirstName(firstName);
+            String givenName = helper.getGivenName();
+            if (givenName != null) {
+                contact.addGivenName(givenName);
             }
 
-            String lastName = helper.getFamilyName();
-            if (lastName != null) {
-                contact.addLastName(lastName);
+            String familyName = helper.getFamilyName();
+            if (familyName != null) {
+                contact.addFamilyName(familyName);
             }
         }
     }
