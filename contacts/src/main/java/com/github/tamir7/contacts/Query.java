@@ -20,6 +20,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -141,6 +143,21 @@ public final class Query {
         return find(ids);
     }
 
+    /**
+     * Returns single contact
+     * If there are more than one contact, returns the first one
+     *
+     * @return Single contact
+     */
+    @Nullable
+    public Contact findOne() {
+        List<Contact> contacts = this.find();
+        if (contacts.size() > 0) {
+            return contacts.get(0);
+        }
+        return null;
+    }
+
     private List<Long> findIds(List<Long> ids, String mimeType, Where innerWhere) {
         String[] projection = { ContactsContract.RawContacts.CONTACT_ID};
         Where where = Where.equalTo(ContactsContract.Data.MIMETYPE, mimeType);
@@ -251,6 +268,11 @@ public final class Query {
     }
 
     private void updateContact(Contact contact, CursorHelper helper) {
+        Long contactId = helper.getContactId();
+        if (contactId != null) {
+            contact.addContactId(contactId);
+        }
+
         String displayName = helper.getDisplayName();
         if (displayName != null) {
             contact.addDisplayName(displayName);
