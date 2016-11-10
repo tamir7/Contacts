@@ -1,7 +1,11 @@
 Change Log
 ==========
 
-Version 1.1.2 *(10-11-2016)*
+Version 1.1.3 *(10-11-2016)*
+------------------
+  * Bug fix: Fixed gradle upload script.
+
+Version 1.1.2 *(10-11-2016)* (Version not uploaded to Jcenter correctly)
 ------------------
    * Feature: Added whereNotEqualTo api to query.
    * Bug Fix: getPhoneNumber now returns phoneNumber instead of serializedPhoneNumber.
