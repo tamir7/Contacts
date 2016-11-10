@@ -5,28 +5,28 @@ buildscript {
 
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+  //      classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
 
 plugins {
-    id "com.jfrog.bintray" version "1.5"
+    id "com.jfrog.bintray" version "1.7"
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
+//apply plugin: 'com.github.dcendents.android-maven'
 
 version = VERSION_NAME
 group = GROUP
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName VERSION_NAME
     }
@@ -38,7 +38,7 @@ android {
     }
 }
 
-install {
+/*install {
     repositories.mavenInstaller {
         pom.project {
             packaging 'aar'
@@ -66,7 +66,7 @@ install {
             }
         }
     }
-}
+}*/
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -103,6 +103,12 @@ bintray {
         labels = ['Android', 'Contacts']
         publicDownloadNumbers = true
         publish = true
+        version {
+            name = VERSION_NAME
+            desc = DESCRIPTION
+            released  = new Date()
+            vcsTag = VERSION_NAME
+        }
     }
 }
 
