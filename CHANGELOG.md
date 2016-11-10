@@ -1,10 +1,16 @@
 Change Log
 ==========
 
+Version 1.1.2 *(10-11-2016)*
+------------------
+   * Feature: Added whereNotEqualTo api to query.
+   * Bug Fix: getPhoneNumber now returns phoneNumber instead of serializedPhoneNumber.
+
+
 Version 1.1.1 *(22-08-2016)*
 ------------------
    * Fetched Data: 
-    * Added StructuredName: GivenName and FamilyName
+    * Added StructuredName: GivenName and FamilyName.
 
 Version 1.1.0 *(17-08-2016)*
 ------------------
