@@ -82,7 +82,7 @@ public final class Query {
 
 
     /**
-     * Add a constraint to the query for finding values that equal the provided value.
+     * Add a constraint to the query for finding values that NOT equal the provided value.
      *
      * @param field     The field that the value to match is stored in.
      * @param value     The value that the field value must be NOT equal to.
