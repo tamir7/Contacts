@@ -80,6 +80,19 @@ public final class Query {
         return this;
     }
 
+
+    /**
+     * Add a constraint to the query for finding values that equal the provided value.
+     *
+     * @param field     The field that the value to match is stored in.
+     * @param value     The value that the field value must be NOT equal to.
+     * @return          this, so you can chain this call.
+     */
+    public Query whereNotEqualTo(Contact.Field field, Object value) {
+        addNewConstraint(field, Where.notEqualTo(field.getColumn(), value));
+        return this;
+    }
+
     /**
      * Restrict the return contacts to only include contacts with a phone number.
      *
