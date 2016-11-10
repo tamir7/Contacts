@@ -121,7 +121,7 @@ public class PhoneNumber {
      * @return phone number.
      */
     public String getNumber() {
-        return normalizedNumber;
+        return number;
     }
 
     /**
