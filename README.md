@@ -72,7 +72,7 @@ List<Query> qs = new ArrayList<>();
 qs.add(q1);
 qs.add(q2);
 mainQuery.or(qs);
-List<Contacts> contacts = mainQuery.find();
+List<Contact> contacts = mainQuery.find();
 
 ```
 
