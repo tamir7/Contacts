@@ -120,7 +120,7 @@ public final class Contact {
     }
 
     Contact addGivenName(String givenName) {
-        this.givenName = this.givenName;
+        this.givenName = givenName;
         return this;
     }
 
