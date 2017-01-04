@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 1.1.4 *(04-01-2017)*
+------------------
+  * Bug fix: getGivenName now returns correct value.
+
 Version 1.1.3 *(10-11-2016)*
 ------------------
   * Bug fix: Fixed gradle upload script.
