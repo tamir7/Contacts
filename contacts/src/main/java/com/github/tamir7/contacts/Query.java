@@ -235,6 +235,7 @@ public final class Query {
                     contactsMap.put(contactId, contact);
                 }
 
+                contact.setId(contactId);
                 updateContact(contact, helper);
             }
 
