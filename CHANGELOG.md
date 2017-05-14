@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 1.1.5 *(14-05-2017)*
+------------------
+  * Feature: added a getter for contact ID.
+
 Version 1.1.4 *(04-01-2017)*
 ------------------
   * Bug fix: getGivenName now returns correct value.
