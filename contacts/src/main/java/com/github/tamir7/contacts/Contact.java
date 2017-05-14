@@ -28,6 +28,7 @@ import java.util.Set;
  * Represents a compound contact. aggregating all phones, email and photo's a contact has.
  */
 public final class Contact {
+    private Long id;
     private String displayName;
     private String givenName;
     private String familyName;
@@ -114,6 +115,10 @@ public final class Contact {
 
     Contact() {}
 
+    void setId(Long id) {
+        this.id = id;
+    }
+
     Contact addDisplayName(String displayName) {
         this.displayName = displayName;
         return this;
@@ -147,6 +152,15 @@ public final class Contact {
     Contact addEvent(Event event) {
         events.add(event);
         return this;
+    }
+
+    /**
+     * Gets a the phone contact id.
+     *
+     * @return contact id.
+     */
+    public Long getId() {
+        return id;
     }
 
     /**
