@@ -46,6 +46,10 @@ class CursorHelper {
         return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
     }
 
+    String getWebsite() {
+        return getString(c, ContactsContract.CommonDataKinds.Website.URL);
+    }
+
     PhoneNumber getPhoneNumber() {
         String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);
         if (number == null) {
