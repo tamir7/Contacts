@@ -69,7 +69,9 @@ public final class Contact {
         EventType(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Event.TYPE),
         EventLabel(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Event.LABEL);
+                ContactsContract.CommonDataKinds.Event.LABEL),
+        Website(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Website.URL);
 
         private final String column;
         private final String mimeType;
