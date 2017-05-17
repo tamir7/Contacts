@@ -301,6 +301,18 @@ public final class Query {
             if (familyName != null) {
                 contact.addFamilyName(familyName);
             }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)) {
+            String companyName = helper.getCompanyName();
+
+            if (companyName != null) {
+                contact.addCompanyName(companyName);
+            }
+
+            String companyTitle = helper.getCompanyTitle();
+
+            if (companyTitle != null) {
+                contact.addCompanyTitle(companyTitle);
+            }
         }
     }
 
