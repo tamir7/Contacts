@@ -36,9 +36,11 @@ public final class Contact {
     private String photoUri;
     private final Set<Email> emails = new HashSet<>();
     private final Set<Event> events = new HashSet<>();
+    private final Set<String> websites = new HashSet<>();
 
     interface AbstractField {
         String getMimeType();
+
         String getColumn();
     }
 
@@ -156,6 +158,11 @@ public final class Contact {
         return this;
     }
 
+    Contact addWebsite(String website) {
+        websites.add(website);
+        return this;
+    }
+
     /**
      * Gets a the phone contact id.
      *
@@ -245,6 +252,15 @@ public final class Contact {
     public Event getAnniversary() {
         return getEvent(Event.Type.ANNIVERSARY);
 
+    }
+
+    /**
+     * Gets the list of all websites the contact has
+     *
+     * @return A list of websites
+     */
+    public List<String> getWebsites() {
+        return Arrays.asList(websites.toArray(new String[websites.size()]));
     }
 
     private Event getEvent(Event.Type type) {
