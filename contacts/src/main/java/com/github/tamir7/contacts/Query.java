@@ -301,6 +301,11 @@ public final class Query {
             if (familyName != null) {
                 contact.addFamilyName(familyName);
             }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)) {
+            Address address = helper.getAddress();
+            if (address != null) {
+                contact.addAddress(address);
+            }
         }
     }
 
