@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        jcenter()
     }
 
     dependencies {
@@ -7,6 +8,8 @@ buildscript {
 }
 
 plugins {
+    id "com.jfrog.bintray" version "1.7"
+    id "com.github.dcendents.android-maven" version "1.5"
 }
 
 apply plugin: 'com.android.library'
@@ -32,6 +35,36 @@ android {
     }
 }
 
+install {
+     repositories.mavenInstaller {
+         pom.project {
+             packaging 'aar'
+             name NAME
+             description DESCRIPTION
+             url SITE_URL
+
+             licenses {
+                 license {
+                     name LICENCE_NAME
+                     url LICENCE_URL
+                 }
+             }
+             developers {
+                 developer {
+                     id DEVELOPER_ID
+                     name DEVELOPER_NAME
+                     email DEVELOPER_EMAIL
+                 }
+             }
+             scm {
+                 connection GIT_URL
+                 developerConnection GIT_URL
+                 url SITE_URL
+             }
+         }
+     }
+ }
+
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
@@ -49,6 +82,25 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives javadocJar
     archives sourcesJar
+}
+
+bintray {
+    user = BINTRAY_USER
+    key = BINTRAY_API_KEY
+
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = NAME
+        desc = DESCRIPTION
+        websiteUrl = SITE_URL
+        vcsUrl = GIT_URL
+        issueTrackerUrl = ISSUE_TRACKER_URL
+        licenses = ['Apache-2.0']
+        labels = ['Android', 'Contacts']
+        publicDownloadNumbers = true
+        publish = true
+    }
 }
 
 dependencies {
