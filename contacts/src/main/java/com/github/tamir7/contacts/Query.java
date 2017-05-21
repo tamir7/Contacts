@@ -313,6 +313,16 @@ public final class Query {
             if (companyTitle != null) {
                 contact.addCompanyTitle(companyTitle);
             }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE)) {
+            String website = helper.getWebsite();
+            if (website != null) {
+                contact.addWebsite(website);
+            }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)) {
+            Address address = helper.getAddress();
+            if (address != null) {
+                contact.addAddress(address);
+            }
         }
     }
 
