@@ -318,6 +318,11 @@ public final class Query {
             if (website != null) {
                 contact.addWebsite(website);
             }
+        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)) {
+            String note = helper.getNote();
+            if (note != null) {
+                contact.addNote(note);
+            }
         } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)) {
             Address address = helper.getAddress();
             if (address != null) {

@@ -41,6 +41,7 @@ public final class Contact {
     private String companyTitle;
     private final Set<String> websites = new HashSet<>();
     private final Set<Address> addresses = new HashSet<>();
+    private String note;
 
     interface AbstractField {
         String getMimeType();
@@ -82,6 +83,8 @@ public final class Contact {
                 ContactsContract.CommonDataKinds.Organization.TITLE),
         Website(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Website.URL),
+        Note(ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Note.NOTE),
         Address(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS),
         AddressType(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
@@ -194,6 +197,11 @@ public final class Contact {
 
     Contact addWebsite(String website) {
         websites.add(website);
+        return this;
+    }
+
+    Contact addNote(String note) {
+        this.note = note;
         return this;
     }
 
@@ -318,6 +326,15 @@ public final class Contact {
      */
     public List<String> getWebsites() {
         return Arrays.asList(websites.toArray(new String[websites.size()]));
+    }
+
+    /**
+     * Gets the note of the contact
+     *
+     * @return the note
+     */
+    public String getNote() {
+        return note;
     }
   
     /**
