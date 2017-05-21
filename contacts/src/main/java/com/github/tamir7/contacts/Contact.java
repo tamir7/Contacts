@@ -81,7 +81,7 @@ public final class Contact {
         CompanyTitle(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Organization.TITLE),
         Website(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Website.URL);
+                ContactsContract.CommonDataKinds.Website.URL),
         Address(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS),
         AddressType(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
