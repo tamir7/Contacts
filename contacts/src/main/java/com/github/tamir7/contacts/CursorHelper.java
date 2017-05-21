@@ -46,6 +46,10 @@ class CursorHelper {
         return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
     }
 
+    String getWebsite() {
+        return getString(c, ContactsContract.CommonDataKinds.Website.URL);
+    }
+
     Address getAddress() {
         String address = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
         if (address == null) {
@@ -68,7 +72,6 @@ class CursorHelper {
         String label = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.LABEL);
         return new Address(address, street, city, region, postcode, country, label);
     }
-
 
     PhoneNumber getPhoneNumber() {
         String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);

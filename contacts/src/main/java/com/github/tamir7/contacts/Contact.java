@@ -36,6 +36,7 @@ public final class Contact {
     private String photoUri;
     private final Set<Email> emails = new HashSet<>();
     private final Set<Event> events = new HashSet<>();
+    private final Set<String> websites = new HashSet<>();
     private final Set<Address> addresses = new HashSet<>();
 
     interface AbstractField {
@@ -72,6 +73,8 @@ public final class Contact {
                 ContactsContract.CommonDataKinds.Event.TYPE),
         EventLabel(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Event.LABEL),
+        Website(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Website.URL);
         Address(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS),
         AddressType(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
@@ -172,6 +175,11 @@ public final class Contact {
         return this;
     }
 
+    Contact addWebsite(String website) {
+        websites.add(website);
+        return this;
+    }
+
     Contact addAddress(Address address) {
         addresses.add(address);
         return this;
@@ -269,6 +277,14 @@ public final class Contact {
     }
 
     /**
+     * Gets the list of all websites the contact has
+     *
+     * @return A list of websites
+     */
+    public List<String> getWebsites() {
+        return Arrays.asList(websites.toArray(new String[websites.size()]));
+    }
+    /**
      * Gets the list of addresses
      *
      * @return A list of addresses
@@ -276,7 +292,6 @@ public final class Contact {
     public List<Address> getAddresses() {
         return Arrays.asList(addresses.toArray(new Address[addresses.size()]));
     }
-
 
     private Event getEvent(Event.Type type) {
         for (Event event: events) {
