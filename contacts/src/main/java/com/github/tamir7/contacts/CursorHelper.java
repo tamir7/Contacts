@@ -46,6 +46,30 @@ class CursorHelper {
         return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
     }
 
+    Address getAddress() {
+        String address = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
+        if (address == null) {
+            return null;
+        }
+
+        Integer typeValue = getInt(c, ContactsContract.CommonDataKinds.StructuredPostal.TYPE);
+        Address.Type type = typeValue == null ? Address.Type.UNKNOWN : Address.Type.fromValue(typeValue);
+
+        String street = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.STREET);
+        String city = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.CITY);
+        String region = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.REGION);
+        String postcode = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE);
+        String country = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY);
+
+        if (!type.equals(Address.Type.CUSTOM)) {
+            return new Address(address, street, city, region, postcode, country, type);
+        }
+
+        String label = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.LABEL);
+        return new Address(address, street, city, region, postcode, country, label);
+    }
+
+
     PhoneNumber getPhoneNumber() {
         String number = getString(c, ContactsContract.CommonDataKinds.Phone.NUMBER);
         if (number == null) {
