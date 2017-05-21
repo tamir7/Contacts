@@ -46,6 +46,14 @@ class CursorHelper {
         return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
     }
 
+    String getCompanyName() {
+        return getString(c, ContactsContract.CommonDataKinds.Organization.COMPANY);
+    }
+
+    String getCompanyTitle() {
+        return getString(c, ContactsContract.CommonDataKinds.Organization.TITLE);
+    }
+
     String getWebsite() {
         return getString(c, ContactsContract.CommonDataKinds.Website.URL);
     }

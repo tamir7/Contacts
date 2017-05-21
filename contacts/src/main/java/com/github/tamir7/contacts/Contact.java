@@ -32,10 +32,13 @@ public final class Contact {
     private String displayName;
     private String givenName;
     private String familyName;
+
     private final Set<PhoneNumber> phoneNumbers = new HashSet<>();
     private String photoUri;
     private final Set<Email> emails = new HashSet<>();
     private final Set<Event> events = new HashSet<>();
+    private String companyName;
+    private String companyTitle;
     private final Set<String> websites = new HashSet<>();
     private final Set<Address> addresses = new HashSet<>();
 
@@ -73,6 +76,10 @@ public final class Contact {
                 ContactsContract.CommonDataKinds.Event.TYPE),
         EventLabel(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Event.LABEL),
+        CompanyName(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Organization.COMPANY),
+        CompanyTitle(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Organization.TITLE),
         Website(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Website.URL);
         Address(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
@@ -172,6 +179,16 @@ public final class Contact {
 
     Contact addEvent(Event event) {
         events.add(event);
+        return this;
+    }
+
+    Contact addCompanyName(String companyName) {
+        this.companyName = companyName;
+        return this;
+    }
+
+    Contact addCompanyTitle(String companyTitle) {
+        this.companyTitle = companyTitle;
         return this;
     }
 
@@ -277,6 +294,24 @@ public final class Contact {
     }
 
     /**
+     * Gets the name of the company the contact works on
+     *
+     * @return the company name
+     */
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    /**
+     * Gets the job title of the contact
+     *
+     * @return the job title
+     */
+    public String getCompanyTitle() {
+        return companyTitle;
+    }
+  
+    /**
      * Gets the list of all websites the contact has
      *
      * @return A list of websites
@@ -284,6 +319,7 @@ public final class Contact {
     public List<String> getWebsites() {
         return Arrays.asList(websites.toArray(new String[websites.size()]));
     }
+  
     /**
      * Gets the list of addresses
      *
