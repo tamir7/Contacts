@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 1.1.6 *(21-05-2017)*
+------------------
+  * Feature: added a getter for address, company info and websites.
+
 Version 1.1.5 *(14-05-2017)*
 ------------------
   * Feature: added a getter for contact ID.
