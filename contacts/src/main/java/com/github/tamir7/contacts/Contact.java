@@ -37,6 +37,7 @@ public final class Contact {
     private final Set<Email> emails = new HashSet<>();
     private final Set<Event> events = new HashSet<>();
     private final Set<String> websites = new HashSet<>();
+    private final Set<Address> addresses = new HashSet<>();
 
     interface AbstractField {
         String getMimeType();
@@ -47,9 +48,9 @@ public final class Contact {
     public enum Field implements AbstractField {
         DisplayName(null, ContactsContract.Data.DISPLAY_NAME),
         GivenName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
-           ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME),
+                ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME),
         FamilyName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
-           ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME),
+                ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME),
         PhoneNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NUMBER),
         PhoneType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
@@ -74,6 +75,22 @@ public final class Contact {
                 ContactsContract.CommonDataKinds.Event.LABEL),
         Website(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Website.URL);
+        Address(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS),
+        AddressType(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.TYPE),
+        AddressStreet(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.STREET),
+        AddressCity(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.CITY),
+        AddressRegion(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.REGION),
+        AddressPostcode(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE),
+        AddressCountry(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY),
+        AddressLabel(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.StructuredPostal.LABEL);
 
         private final String column;
         private final String mimeType;
@@ -160,6 +177,11 @@ public final class Contact {
 
     Contact addWebsite(String website) {
         websites.add(website);
+        return this;
+    }
+
+    Contact addAddress(Address address) {
+        addresses.add(address);
         return this;
     }
 
@@ -261,6 +283,14 @@ public final class Contact {
      */
     public List<String> getWebsites() {
         return Arrays.asList(websites.toArray(new String[websites.size()]));
+    }
+    /**
+     * Gets the list of addresses
+     *
+     * @return A list of addresses
+     */
+    public List<Address> getAddresses() {
+        return Arrays.asList(addresses.toArray(new Address[addresses.size()]));
     }
 
     private Event getEvent(Event.Type type) {
