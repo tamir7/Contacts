@@ -276,58 +276,67 @@ public final class Query {
         }
 
         String mimeType = helper.getMimeType();
-        if (mimeType.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
-            PhoneNumber phoneNumber = helper.getPhoneNumber();
-            if (phoneNumber != null) {
-                contact.addPhoneNumber(phoneNumber);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
-            Email email = helper.getEmail();
-            if (email != null) {
-                contact.addEmail(email);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)) {
-            Event event = helper.getEvent();
-            if (event != null) {
-                contact.addEvent(event);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)) {
-            String givenName = helper.getGivenName();
-            if (givenName != null) {
-                contact.addGivenName(givenName);
-            }
+        switch (mimeType) {
+            case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE:
+                PhoneNumber phoneNumber = helper.getPhoneNumber();
+                if (phoneNumber != null) {
+                    contact.addPhoneNumber(phoneNumber);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE:
+                Email email = helper.getEmail();
+                if (email != null) {
+                    contact.addEmail(email);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE:
+                Event event = helper.getEvent();
+                if (event != null) {
+                    contact.addEvent(event);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE:
+                String givenName = helper.getGivenName();
+                if (givenName != null) {
+                    contact.addGivenName(givenName);
+                }
 
-            String familyName = helper.getFamilyName();
-            if (familyName != null) {
-                contact.addFamilyName(familyName);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)) {
-            String companyName = helper.getCompanyName();
+                String familyName = helper.getFamilyName();
+                if (familyName != null) {
+                    contact.addFamilyName(familyName);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE:
+                String companyName = helper.getCompanyName();
 
-            if (companyName != null) {
-                contact.addCompanyName(companyName);
-            }
+                if (companyName != null) {
+                    contact.addCompanyName(companyName);
+                }
 
-            String companyTitle = helper.getCompanyTitle();
+                String companyTitle = helper.getCompanyTitle();
 
-            if (companyTitle != null) {
-                contact.addCompanyTitle(companyTitle);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE)) {
-            String website = helper.getWebsite();
-            if (website != null) {
-                contact.addWebsite(website);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)) {
-            String note = helper.getNote();
-            if (note != null) {
-                contact.addNote(note);
-            }
-        } else if (mimeType.equals(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)) {
-            Address address = helper.getAddress();
-            if (address != null) {
-                contact.addAddress(address);
-            }
+                if (companyTitle != null) {
+                    contact.addCompanyTitle(companyTitle);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE:
+                String website = helper.getWebsite();
+                if (website != null) {
+                    contact.addWebsite(website);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE:
+                String note = helper.getNote();
+                if (note != null) {
+                    contact.addNote(note);
+                }
+                break;
+            case ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE:
+                Address address = helper.getAddress();
+                if (address != null) {
+                    contact.addAddress(address);
+                }
+                break;
         }
     }
 

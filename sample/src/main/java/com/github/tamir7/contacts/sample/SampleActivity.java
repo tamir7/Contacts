@@ -11,7 +11,7 @@ import android.util.Log;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,13 @@ public class SampleActivity extends AppCompatActivity {
             @Override
             public Void call() throws Exception {
                 Query q = Contacts.getQuery();
-                q.include(Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email);
+                q.include(Contact.Field.ContactId, Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email);
                 Query q1 = Contacts.getQuery();
                 q1.whereEqualTo(Contact.Field.DisplayName, "Tamir Shomer");
                 q1.hasPhoneNumber();
 
                 Query q2 = Contacts.getQuery();
-                q2.whereStartsWith(Contact.Field.DisplayName, "Guy");
+                q2.whereStartsWith(Contact.Field.ContactId, "791");
                 q2.hasPhoneNumber();
                 List<Query> queries = new ArrayList<>();
                 queries.add(q1);
@@ -51,7 +51,7 @@ public class SampleActivity extends AppCompatActivity {
                 q.or(queries);
 
                 List<Contact> contacts = q.find();
-                Log.e(TAG, new Gson().toJson(contacts));
+                Log.e(TAG, new GsonBuilder().setPrettyPrinting().create().toJson(contacts));
                 return null;
             }
         }).continueWith(new Continuation<Void, Void>() {
