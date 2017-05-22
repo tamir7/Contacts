@@ -58,6 +58,10 @@ class CursorHelper {
         return getString(c, ContactsContract.CommonDataKinds.Website.URL);
     }
 
+    String getNote() {
+        return getString(c, ContactsContract.CommonDataKinds.Note.NOTE);
+    }
+
     Address getAddress() {
         String address = getString(c, ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
         if (address == null) {
