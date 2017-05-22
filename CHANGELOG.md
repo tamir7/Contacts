@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.1.7 *(22-05-2017)*
+------------------
+  * Feature: added a getter for contact note.
+  * Feature: made ContactId field public.
+
+
 Version 1.1.6 *(21-05-2017)*
 ------------------
   * Feature: added a getter for address, company info and websites.
