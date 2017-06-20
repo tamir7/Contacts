@@ -39,7 +39,7 @@ public final class Query<T> {
     private Set<Contact.Field> include = new HashSet<>();
     private List<Query> innerQueries;
     private Contact.Field sortOrderField = Contact.Field.SortKey;
-    private SortOrderType sortOrderType;
+    private SortOrderType sortOrderType = SortOrderType.ASC;
     private ContactTransform<T> transform;
 
     Query(Context context) {
