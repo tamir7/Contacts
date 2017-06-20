@@ -45,6 +45,12 @@ public final class Query<T> {
     Query(Context context) {
         this.context = context;
         include.addAll(Arrays.asList(Contact.Field.values()));
+        transform(new ContactTransform<Contact>() {
+            @Override
+            public Contact transform(Contact source) {
+                return source;
+            }
+        });
     }
 
     /**
@@ -282,15 +288,9 @@ public final class Query<T> {
     }
 
     public Query transform(ContactTransform transform) {
-        if (transform == null) {
-            transform = new ContactTransform<Contact>() {
-                @Override
-                public Contact transform(Contact source) {
-                    return source;
-                }
-            };
+        if (transform != null) {
+            this.transform = transform;
         }
-        this.transform = transform;
         return this;
     }
 

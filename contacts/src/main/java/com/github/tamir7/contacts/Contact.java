@@ -53,7 +53,7 @@ public final class Contact {
 
     public enum Field implements AbstractField {
         ContactId(null, ContactsContract.RawContacts.CONTACT_ID),
-        DisplayName(null, ContactsContract.Data.DISPLAY_NAME),
+        DisplayName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, ContactsContract.Data.DISPLAY_NAME),
         GivenName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME),
         FamilyName(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
