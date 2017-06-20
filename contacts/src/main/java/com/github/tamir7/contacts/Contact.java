@@ -30,6 +30,8 @@ import java.util.Set;
 public final class Contact {
     private Long id;
     private String displayName;
+    private String sortKey;
+    private String phoneBookLabel;
     private String givenName;
     private String familyName;
 
@@ -62,6 +64,10 @@ public final class Contact {
                 ContactsContract.CommonDataKinds.Phone.TYPE),
         PhoneLabel(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.LABEL),
+        SortKey(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY),
+        PhoneBookLabel(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                "phonebook_label"),
         @SuppressLint("InlinedApi")
         PhoneNormalizedNumber(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER),
@@ -152,6 +158,16 @@ public final class Contact {
 
     Contact addDisplayName(String displayName) {
         this.displayName = displayName;
+        return this;
+    }
+
+    Contact addSortKey(String sortKey) {
+        this.sortKey = sortKey;
+        return this;
+    }
+
+    Contact addPhoneBookLabel(String phoneBookLabel) {
+        this.phoneBookLabel = phoneBookLabel;
         return this;
     }
 
@@ -326,6 +342,14 @@ public final class Contact {
      */
     public List<String> getWebsites() {
         return Arrays.asList(websites.toArray(new String[websites.size()]));
+    }
+
+    public String getSortKey() {
+        return sortKey;
+    }
+
+    public String getPhoneBookLabel() {
+        return phoneBookLabel;
     }
 
     /**

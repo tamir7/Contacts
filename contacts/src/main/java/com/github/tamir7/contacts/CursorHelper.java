@@ -38,12 +38,20 @@ class CursorHelper {
         return getString(c, ContactsContract.Data.DISPLAY_NAME);
     }
 
+    String getSortKey() {
+        return getString(c, ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY);
+    }
+
     String getGivenName() {
         return getString(c, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
     }
 
     String getFamilyName() {
         return getString(c, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
+    }
+
+    String getPhoneBookLabel() {
+        return getString(c, Contact.Field.PhoneBookLabel.getColumn());
     }
 
     String getCompanyName() {

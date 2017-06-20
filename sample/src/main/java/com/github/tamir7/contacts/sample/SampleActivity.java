@@ -9,11 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.github.tamir7.contacts.Contact;
+import com.github.tamir7.contacts.ContactTransform;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -36,9 +36,9 @@ public class SampleActivity extends AppCompatActivity {
         Task.callInBackground(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                Query q = Contacts.getQuery();
-                q.include(Contact.Field.ContactId, Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email);
-                Query q1 = Contacts.getQuery();
+                Query<CustomModel> q = Contacts.getQuery();
+                q.include(Contact.Field.ContactId, Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email, Contact.Field.EventStartDate, Contact.Field.PhoneLabel, Contact.Field.SortKey, Contact.Field.PhoneBookLabel);
+                /*Query q1 = Contacts.getQuery();
                 q1.whereEqualTo(Contact.Field.DisplayName, "Tamir Shomer");
                 q1.hasPhoneNumber();
 
@@ -48,9 +48,22 @@ public class SampleActivity extends AppCompatActivity {
                 List<Query> queries = new ArrayList<>();
                 queries.add(q1);
                 queries.add(q2);
-                q.or(queries);
+                q.or(queries);*/
 
-                List<Contact> contacts = q.find();
+                q.sortOrder(Contact.Field.SortKey);
+
+                q.transform(new ContactTransform<CustomModel>() {
+                    @Override
+                    public CustomModel transform(Contact source) {
+                        CustomModel model = new CustomModel();
+                        model.setName(source.getDisplayName());
+                        if (source.getPhoneNumbers() != null && source.getPhoneNumbers().size() > 0) {
+                            model.setPhone(source.getPhoneNumbers().get(0).getNumber());
+                        }
+                        return model;
+                    }
+                });
+                List<CustomModel> contacts = q.find();
                 Log.e(TAG, new GsonBuilder().setPrettyPrinting().create().toJson(contacts));
                 return null;
             }
