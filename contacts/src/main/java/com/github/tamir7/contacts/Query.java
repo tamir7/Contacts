@@ -40,12 +40,12 @@ public final class Query<T> {
     private List<Query> innerQueries;
     private Contact.Field sortOrderField = Contact.Field.SortKey;
     private SortOrderType sortOrderType = SortOrderType.ASC;
-    private ContactTransform<T> transform;
+    private ContactTransformer<T> transformer;
 
     Query(Context context) {
         this.context = context;
         include.addAll(Arrays.asList(Contact.Field.values()));
-        transform(new ContactTransform<Contact>() {
+        transformer(new ContactTransformer<Contact>() {
             @Override
             public Contact transform(Contact source) {
                 return source;
@@ -255,16 +255,13 @@ public final class Query<T> {
                 contact.setId(contactId);
                 updateContact(contact, helper);
 
-                T t = contactsMap.get(contactId);
-                if (t == null) {
-                    T transformObject = this.transform.transform(contact);
-                    contactsMap.put(contactId, transformObject);
-                }
+                T transformObject = this.transformer.transform(contact);
+
+                contactsMap.put(contactId, transformObject);
             }
 
             c.close();
         }
-
         return new ArrayList<>(contactsMap.values());
     }
 
@@ -287,9 +284,9 @@ public final class Query<T> {
         }
     }
 
-    public Query transform(ContactTransform transform) {
+    public Query transformer(ContactTransformer transform) {
         if (transform != null) {
-            this.transform = transform;
+            this.transformer = transform;
         }
         return this;
     }

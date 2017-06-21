@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.github.tamir7.contacts.Contact;
-import com.github.tamir7.contacts.ContactTransform;
+import com.github.tamir7.contacts.ContactTransformer;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
 import com.google.gson.GsonBuilder;
@@ -52,7 +52,7 @@ public class SampleActivity extends AppCompatActivity {
 
                 q.sortOrder(Contact.Field.SortKey);
 
-                q.transform(new ContactTransform<CustomModel>() {
+                q.transformer(new ContactTransformer<CustomModel>() {
                     @Override
                     public CustomModel transform(Contact source) {
                         CustomModel model = new CustomModel();
