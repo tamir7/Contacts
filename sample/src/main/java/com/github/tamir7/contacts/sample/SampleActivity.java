@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.github.tamir7.contacts.Contact;
-import com.github.tamir7.contacts.ContactTransformer;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
 import com.google.gson.GsonBuilder;
@@ -36,8 +35,8 @@ public class SampleActivity extends AppCompatActivity {
         Task.callInBackground(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                Query<CustomModel> q = Contacts.getQuery();
-                q.include(Contact.Field.ContactId, Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email, Contact.Field.EventStartDate, Contact.Field.PhoneLabel, Contact.Field.SortKey, Contact.Field.PhoneBookLabel);
+                Query q = Contacts.getQuery();
+                q.include(Contact.Field.ContactId, Contact.Field.DisplayName, Contact.Field.PhoneNumber, Contact.Field.PhoneNormalizedNumber, Contact.Field.Email, Contact.Field.EventStartDate, Contact.Field.PhoneLabel, Contact.Field.SortKey, Contact.Field.PhoneBookLabel, Contact.Field.EventType);
                 /*Query q1 = Contacts.getQuery();
                 q1.whereEqualTo(Contact.Field.DisplayName, "Tamir Shomer");
                 q1.hasPhoneNumber();
@@ -52,7 +51,7 @@ public class SampleActivity extends AppCompatActivity {
 
                 q.sortOrder(Contact.Field.SortKey);
 
-                q.transformer(new ContactTransformer<CustomModel>() {
+                /*q.transformer(new ContactTransformer<CustomModel>() {
                     @Override
                     public CustomModel transform(Contact source) {
                         CustomModel model = new CustomModel();
@@ -63,7 +62,9 @@ public class SampleActivity extends AppCompatActivity {
                         return model;
                     }
                 });
-                List<CustomModel> contacts = q.find();
+                List<CustomModel> contacts = q.find();*/
+
+                List<Contact> contacts = q.find();
                 Log.e(TAG, new GsonBuilder().setPrettyPrinting().create().toJson(contacts));
                 return null;
             }
