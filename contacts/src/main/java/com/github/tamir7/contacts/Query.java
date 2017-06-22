@@ -22,6 +22,7 @@ import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -45,12 +46,6 @@ public final class Query<T> {
     Query(Context context) {
         this.context = context;
         include.addAll(Arrays.asList(Contact.Field.values()));
-        transform(new ContactTransformer<Contact>() {
-            @Override
-            public Contact transform(Contact source) {
-                return source;
-            }
-        });
     }
 
     /**
@@ -244,25 +239,37 @@ public final class Query<T> {
                 null,
                 String.format("%s %s", sortOrderField.getColumn(), sortOrderType.name()));
 
-        Map<Long, T> contactsMap = new LinkedHashMap<>();
+        Map<Long, Contact> contactsMap = new LinkedHashMap<>();
 
         if (c != null) {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
                 Long contactId = helper.getContactId();
 
-                Contact contact = new Contact();
+                Contact contact = contactsMap.get(contactId);
+                if (contact == null) {
+                    contact = new Contact();
+                    contactsMap.put(contactId, contact);
+                }
+
                 contact.setId(contactId);
                 updateContact(contact, helper);
 
-                T transformObject = this.transformer.transform(contact);
-
-                contactsMap.put(contactId, transformObject);
             }
 
             c.close();
         }
-        return new ArrayList<>(contactsMap.values());
+
+        Collection<Contact> values = contactsMap.values();
+        if (transformer != null) {
+            List<T> objects = new ArrayList<>();
+            for (Contact value : values) {
+                objects.add(transformer.transform(value));
+            }
+            return objects;
+        } else {
+            return (List<T>) new ArrayList<Contact>(values);
+        }
     }
 
     private Where buildWhereFromInclude() {
@@ -285,9 +292,7 @@ public final class Query<T> {
     }
 
     public Query transform(ContactTransformer transformer) {
-        if (transformer != null) {
-            this.transformer = transformer;
-        }
+        this.transformer = transformer;
         return this;
     }
 
