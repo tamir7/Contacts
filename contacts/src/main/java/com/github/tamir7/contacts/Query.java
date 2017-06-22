@@ -22,6 +22,7 @@ import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -32,12 +33,15 @@ import java.util.Set;
 /**
  * The Query class defines a query that is used to fetch Contact objects.
  */
-public final class Query {
+public final class Query<T> {
     private final Context context;
     private final Map<String, Where> mimeWhere = new HashMap<>();
     private Where defaultWhere = null;
     private Set<Contact.Field> include = new HashSet<>();
     private List<Query> innerQueries;
+    private Contact.Field sortOrderField = Contact.Field.SortKey;
+    private SortOrderType sortOrderType = SortOrderType.ASC;
+    private ContactTransformer<T> transformer;
 
     Query(Context context) {
         this.context = context;
@@ -47,9 +51,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding string values that contain the provided string.
      *
-     * @param field     The field that the string to match is stored in.
-     * @param value     The substring that the value must contain.
-     * @return          this, so you can chain this call.
+     * @param field The field that the string to match is stored in.
+     * @param value The substring that the value must contain.
+     * @return this, so you can chain this call.
      */
     public Query whereContains(Contact.Field field, Object value) {
         addNewConstraint(field, Where.contains(field.getColumn(), value));
@@ -59,9 +63,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding string values that start with the provided string.
      *
-     * @param field     The field that the string to match is stored in.
-     * @param value     The substring that the value must start with.
-     * @return          this, so you can chain this call.
+     * @param field The field that the string to match is stored in.
+     * @param value The substring that the value must start with.
+     * @return this, so you can chain this call.
      */
     public Query whereStartsWith(Contact.Field field, Object value) {
         addNewConstraint(field, Where.startsWith(field.getColumn(), value));
@@ -71,9 +75,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding values that equal the provided value.
      *
-     * @param field     The field that the value to match is stored in.
-     * @param value     The value that the field value must be equal to.
-     * @return          this, so you can chain this call.
+     * @param field The field that the value to match is stored in.
+     * @param value The value that the field value must be equal to.
+     * @return this, so you can chain this call.
      */
     public Query whereEqualTo(Contact.Field field, Object value) {
         addNewConstraint(field, Where.equalTo(field.getColumn(), value));
@@ -84,9 +88,9 @@ public final class Query {
     /**
      * Add a constraint to the query for finding values that NOT equal the provided value.
      *
-     * @param field     The field that the value to match is stored in.
-     * @param value     The value that the field value must be NOT equal to.
-     * @return          this, so you can chain this call.
+     * @param field The field that the value to match is stored in.
+     * @param value The value that the field value must be NOT equal to.
+     * @return this, so you can chain this call.
      */
     public Query whereNotEqualTo(Contact.Field field, Object value) {
         addNewConstraint(field, Where.notEqualTo(field.getColumn(), value));
@@ -129,12 +133,23 @@ public final class Query {
         return this;
     }
 
+
+    public Query sortOrder(Contact.Field field) {
+        return sortOrder(field, SortOrderType.ASC);
+    }
+
+    public Query sortOrder(Contact.Field field, SortOrderType type) {
+        sortOrderField = field;
+        sortOrderType = type;
+        return this;
+    }
+
     /**
      * Retrieves a list of contacts that satisfy this query.
      *
      * @return A list of all contacts obeying the conditions set in this query.
      */
-    public List<Contact> find() {
+    public List<T> find() {
         List<Long> ids = new ArrayList<>();
 
         if (innerQueries != null) {
@@ -155,7 +170,7 @@ public final class Query {
     }
 
     private List<Long> findIds(List<Long> ids, String mimeType, Where innerWhere) {
-        String[] projection = { ContactsContract.RawContacts.CONTACT_ID};
+        String[] projection = {ContactsContract.RawContacts.CONTACT_ID};
         Where where = Where.equalTo(ContactsContract.Data.MIMETYPE, mimeType);
         where = addWhere(where, innerWhere);
         if (!ids.isEmpty()) {
@@ -207,7 +222,8 @@ public final class Query {
         return ids;
     }
 
-    private List<Contact> find(List<Long> ids) {
+
+    private List<T> find(List<Long> ids) {
         Where where;
         if (ids == null) {
             where = defaultWhere;
@@ -221,7 +237,7 @@ public final class Query {
                 buildProjection(),
                 addWhere(where, buildWhereFromInclude()).toString(),
                 null,
-                ContactsContract.Data.DISPLAY_NAME);
+                String.format("%s %s", sortOrderField.getColumn(), sortOrderType.name()));
 
         Map<Long, Contact> contactsMap = new LinkedHashMap<>();
 
@@ -229,6 +245,7 @@ public final class Query {
             while (c.moveToNext()) {
                 CursorHelper helper = new CursorHelper(c);
                 Long contactId = helper.getContactId();
+
                 Contact contact = contactsMap.get(contactId);
                 if (contact == null) {
                     contact = new Contact();
@@ -237,12 +254,22 @@ public final class Query {
 
                 contact.setId(contactId);
                 updateContact(contact, helper);
+
             }
 
             c.close();
         }
 
-        return new ArrayList<>(contactsMap.values());
+        Collection<Contact> values = contactsMap.values();
+        if (transformer != null) {
+            List<T> objects = new ArrayList<>();
+            for (Contact value : values) {
+                objects.add(transformer.transform(value));
+            }
+            return objects;
+        } else {
+            return (List<T>) new ArrayList<Contact>(values);
+        }
     }
 
     private Where buildWhereFromInclude() {
@@ -255,7 +282,7 @@ public final class Query {
         return Where.in(ContactsContract.Data.MIMETYPE, new ArrayList<Object>(mimes));
     }
 
-    private void addNewConstraint(Contact.Field field, Where where)  {
+    private void addNewConstraint(Contact.Field field, Where where) {
         if (field.getMimeType() == null) {
             defaultWhere = addWhere(defaultWhere, where);
         } else {
@@ -264,10 +291,25 @@ public final class Query {
         }
     }
 
+    public Query transform(ContactTransformer transformer) {
+        this.transformer = transformer;
+        return this;
+    }
+
     private void updateContact(Contact contact, CursorHelper helper) {
         String displayName = helper.getDisplayName();
         if (displayName != null) {
             contact.addDisplayName(displayName);
+        }
+
+        String sortKey = helper.getSortKey();
+        if (sortKey != null) {
+            contact.addSortKey(sortKey);
+        }
+
+        String label = helper.getPhoneBookLabel();
+        if (label != null) {
+            contact.addPhoneBookLabel(label);
         }
 
         String photoUri = helper.getPhotoUri();
@@ -356,5 +398,10 @@ public final class Query {
 
     private Where addWhere(Where where, Where otherWhere) {
         return where == null ? otherWhere : where.and(otherWhere);
+    }
+
+
+    public enum SortOrderType {
+        DESC, ASC
     }
 }
